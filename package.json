@@ -1,0 +1,39 @@
+{
+  "name": "minecraft-bedrock-utils",
+  "version": "1.0.0",
+  "description": "Collection of useful Minecraft Bedrock development related utilities.",
+  "main": "index.js",
+  "bin": "cli.js",
+  "keywords": [
+    "Minecraft",
+    "Bedrock",
+    "Development",
+    "Utilities"
+  ],
+  "author": {
+    "name": "Markus Bordihn",
+    "email": "Markus@Bordihn.de",
+    "url": "https://github.com/MarkusBordihn"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "fs-extra": "^10.0.0",
+    "glob": "^7.1.7"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.30.0",
+    "eslint": "^7.32.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-compat": "^3.13.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "npm-upgrade": "^3.0.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "npm run lint",
+    "sync": "git pull & npm install & npm update && npm prune & npm audit fix",
+    "upgrade": "npm-upgrade & npm install & npm update & npm prune & npm audit fix & npm run test"
+  }
+}

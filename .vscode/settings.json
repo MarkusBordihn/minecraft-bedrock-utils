@@ -1,0 +1,25 @@
+{  
+    "editor.tabSize": 2,
+    "editor.rulers": [80],
+    "cSpell.words": [
+        "bbwe",
+        "behaviour",
+        "Bordihn",
+        "compat",
+        "fileoverview",
+        "LOCALAPPDATA",
+        "Markus",
+        "Minecraft",
+        "mojang",
+        "universalify",
+        "wekyb",
+        "wrappy"
+    ],
+    "cSpell.ignorePaths" : [
+        ".prettierrc",
+        "*.yml",
+        ".vscode",
+        "node_modules",
+        "package-lock.json"
+      ],
+}
