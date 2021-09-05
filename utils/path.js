@@ -39,9 +39,6 @@ const getPossibleManifestInWorkingPath = () => {
   if (result.length > 0) {
     return result;
   }
-  console.warn(
-    'Unable to find any manifest in working path! Which is expected for new projects.'
-  );
 };
 
 const getPossibleBehaviorPackInWorkingPath = () => {
@@ -51,18 +48,11 @@ const getPossibleBehaviorPackInWorkingPath = () => {
     if (manifest.header && manifest.modules) {
       for (const module of manifest.modules) {
         if (module.type == 'data' || module.type == 'client_data') {
-          console.log(
-            'Found possible behavior pack',
-            manifest.header.name,
-            'at',
-            file
-          );
           return path.resolve(path.dirname(file));
         }
       }
     }
   }
-  console.warn('Unable to find behavior pack in working path!');
 };
 
 const getPossibleResourcePackInWorkingPath = () => {
@@ -72,18 +62,11 @@ const getPossibleResourcePackInWorkingPath = () => {
     if (manifest.header && manifest.modules) {
       for (const module of manifest.modules) {
         if (module.type == 'resources') {
-          console.log(
-            'Found possible resource pack',
-            manifest.header.name,
-            'at',
-            file
-          );
           return path.resolve(path.dirname(file));
         }
       }
     }
   }
-  console.warn('Unable to find resource pack in working path!');
 };
 
 const getMinecraftPath = () => {
@@ -94,7 +77,6 @@ const getMinecraftPath = () => {
   if (fs.existsSync(minecraftPath)) {
     return minecraftPath;
   }
-  console.error('Unable to get Minecraft Bedrock path!');
 };
 
 const getMinecraftLocalStatePath = () => {
@@ -109,7 +91,6 @@ const getMinecraftLocalStatePath = () => {
       return localStatePath;
     }
   }
-  console.error('Unable to get Minecraft Local State path!');
 };
 
 const getDevelopmentBehaviorPacksPath = () => {
@@ -122,7 +103,6 @@ const getDevelopmentBehaviorPacksPath = () => {
       return developmentBehaviorPacksPath;
     }
   }
-  console.error('Unable to get Development Behavior Packs Path!');
 };
 
 const getDevelopmentResourcePacksPath = () => {
@@ -135,7 +115,6 @@ const getDevelopmentResourcePacksPath = () => {
       return developmentResourcePacksPath;
     }
   }
-  console.error('Unable to get Development Resource Packs Path!');
 };
 
 const getDevelopmentSkinPacksPath = () => {
@@ -148,7 +127,6 @@ const getDevelopmentSkinPacksPath = () => {
       return developmentSkinPacksPath;
     }
   }
-  console.error('Unable to get Development Skin Packs Path!');
 };
 
 const getBehaviorPacksPath = () => {
@@ -161,7 +139,6 @@ const getBehaviorPacksPath = () => {
       return behaviorPacksPath;
     }
   }
-  console.error('Unable to get Behavior Packs Path!');
 };
 
 const getResourcePacksPath = () => {
@@ -174,7 +151,6 @@ const getResourcePacksPath = () => {
       return resourcePacksPath;
     }
   }
-  console.error('Unable to get Resource Packs Path!');
 };
 
 exports.workingPath = getWorkingPath();

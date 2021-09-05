@@ -34,6 +34,10 @@ const copyBehaviourDevelopmentFiles = () => {
     );
     console.log('Copy behavior pack from', srcDir, 'to', targetDir, '...');
     fs.copySync(srcDir, targetDir);
+  } else {
+    console.warn(
+      'Unable to find behavior pack in working / development path !'
+    );
   }
 };
 
@@ -49,6 +53,10 @@ const copyResourceDevelopmentFiles = () => {
     );
     console.log('Copy resource pack from', srcDir, 'to', targetDir, '...');
     fs.copySync(srcDir, targetDir);
+  } else {
+    console.warn(
+      'Unable to find resource pack in working / development path !'
+    );
   }
 };
 

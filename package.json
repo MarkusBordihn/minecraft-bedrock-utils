@@ -1,7 +1,8 @@
 {
   "name": "minecraft-bedrock-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Collection of useful Minecraft Bedrock development related utilities.",
+  "preferGlobal": true,
   "main": "index.js",
   "bin": "cli.js",
   "keywords": [
@@ -15,10 +16,18 @@
     "email": "Markus@Bordihn.de",
     "url": "https://github.com/MarkusBordihn"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MarkusBordihn/minecraft-bedrock-utils.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MarkusBordihn/minecraft-bedrock-utils/issues"
+  },
   "license": "Apache-2.0",
   "dependencies": {
     "fs-extra": "^10.0.0",
-    "glob": "^7.1.7"
+    "glob": "^7.1.7",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.30.0",

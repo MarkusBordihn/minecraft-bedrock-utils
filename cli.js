@@ -22,6 +22,7 @@
 
 const args = process.argv.slice(2);
 const debug = require('./commands/debug.js');
+const uuid = require('./commands/uuid.js');
 const launch = require('./commands/launch.js');
 const files = require('./commands/files.js');
 const { version } = require('./package.json');
@@ -29,12 +30,19 @@ const { version } = require('./package.json');
 const showUsage = () => {
   console.log('minecraft-bedrock-utils <command>');
   console.log('\nUsage:\n');
-  console.log('minecraft-bedrock-utils debug\t\tshows debug information');
+  console.log('minecraft-bedrock-utils debug\t\t\tshows debug information');
   console.log(
-    'minecraft-bedrock-utils run\t\tcopy behaviour and resource files'
+    'minecraft-bedrock-utils run\t\t\tcopy behaviour and resource files'
+  );
+  console.log('minecraft-bedrock-utils uuid\t\t\treturns a v4 UUID string');
+  console.log(
+    'minecraft-bedrock-utils uuid <name>\t\treturns a v5 UUID string with the given name'
   );
   console.log(
-    'minecraft-bedrock-utils version\t\tshows current version number'
+    'minecraft-bedrock-utils uuid <name> <namespace>\treturns a v5 UUID string with the given name and namespace'
+  );
+  console.log(
+    'minecraft-bedrock-utils version\t\t\tshows current version number'
   );
   console.log('');
 };
@@ -52,6 +60,9 @@ switch (args[0]) {
     break;
   case 'copy':
     files.copyDevelopmentFiles();
+    break;
+  case 'uuid':
+    console.log(uuid.getUUID(args[1], args[2]));
     break;
   case 'version':
   case '-v':
