@@ -18,51 +18,63 @@
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
+const chalk = require('chalk');
 const fs = require('fs-extra');
 const path = require('path');
-const defaultPaths = require('../utils/path.js');
+const defaultPath = require('../utils/path.js');
 
 const copyBehaviourDevelopmentFiles = () => {
   if (
-    defaultPaths.possibleBehaviorPackInWorkingPath &&
-    defaultPaths.developmentBehaviorPacksPath
+    defaultPath.possibleBehaviorPackInWorkingPath &&
+    defaultPath.developmentBehaviorPacksPath
   ) {
-    const srcDir = defaultPaths.possibleBehaviorPackInWorkingPath;
+    const srcDir = defaultPath.possibleBehaviorPackInWorkingPath;
     const targetDir = path.join(
-      defaultPaths.developmentBehaviorPacksPath,
+      defaultPath.developmentBehaviorPacksPath,
       path.basename(srcDir)
     );
-    console.log('Copy behavior pack from', srcDir, 'to', targetDir, '...');
+    console.log(
+      chalk.green('Copy behavior pack from', srcDir, 'to', targetDir, '...')
+    );
     fs.copySync(srcDir, targetDir);
+    return true;
   } else {
     console.warn(
-      'Unable to find behavior pack in working / development path !'
+      chalk.yellow(
+        'Unable to find behavior pack in working / development path !'
+      )
     );
   }
+  return false;
 };
 
 const copyResourceDevelopmentFiles = () => {
   if (
-    defaultPaths.possibleResourcePackInWorkingPath &&
-    defaultPaths.developmentResourcePacksPath
+    defaultPath.possibleResourcePackInWorkingPath &&
+    defaultPath.developmentResourcePacksPath
   ) {
-    const srcDir = defaultPaths.possibleResourcePackInWorkingPath;
+    const srcDir = defaultPath.possibleResourcePackInWorkingPath;
     const targetDir = path.join(
-      defaultPaths.developmentResourcePacksPath,
+      defaultPath.developmentResourcePacksPath,
       path.basename(srcDir)
     );
-    console.log('Copy resource pack from', srcDir, 'to', targetDir, '...');
+    console.log(
+      chalk.green('Copy resource pack from', srcDir, 'to', targetDir, '...')
+    );
     fs.copySync(srcDir, targetDir);
+    return true;
   } else {
     console.warn(
-      'Unable to find resource pack in working / development path !'
+      chalk.yellow(
+        'Unable to find resource pack in working / development path !'
+      )
     );
   }
+  return false;
 };
 
 const copyDevelopmentFiles = () => {
-  copyResourceDevelopmentFiles();
-  copyBehaviourDevelopmentFiles();
+  return copyResourceDevelopmentFiles() || copyBehaviourDevelopmentFiles();
 };
 
 exports.copyBehaviourDevelopmentFiles = copyBehaviourDevelopmentFiles;

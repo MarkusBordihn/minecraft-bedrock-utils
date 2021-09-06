@@ -23,28 +23,28 @@
 const args = process.argv.slice(2);
 const debug = require('./commands/debug.js');
 const uuid = require('./commands/uuid.js');
+const info = require('./commands/info.js');
+const project = require('./commands/project.js');
 const launch = require('./commands/launch.js');
 const files = require('./commands/files.js');
 const { version } = require('./package.json');
 
 const showUsage = () => {
-  console.log('minecraft-bedrock-utils <command>');
-  console.log('\nUsage:\n');
-  console.log('minecraft-bedrock-utils debug\t\t\tshows debug information');
-  console.log(
-    'minecraft-bedrock-utils run\t\t\tcopy behaviour and resource files'
-  );
-  console.log('minecraft-bedrock-utils uuid\t\t\treturns a v4 UUID string');
-  console.log(
-    'minecraft-bedrock-utils uuid <name>\t\treturns a v5 UUID string with the given name'
-  );
-  console.log(
-    'minecraft-bedrock-utils uuid <name> <namespace>\treturns a v5 UUID string with the given name and namespace'
-  );
-  console.log(
-    'minecraft-bedrock-utils version\t\t\tshows current version number'
-  );
-  console.log('');
+  const usage = `minecraft-bedrock-utils <command>
+Usage:
+
+minecraft-bedrock-utils debug\t\t\tshows debug information
+minecraft-bedrock-utils info <path>\t\tshows info about specific project
+minecraft-bedrock-utils info\t\t\tshows info about current project
+minecraft-bedrock-utils run\t\t\tcopy behaviour and resource files
+minecraft-bedrock-utils new\t\t\tcreates a new project (interactive)
+minecraft-bedrock-utils new <name>\t\tcreates a new project with default options
+minecraft-bedrock-utils uuid <name> <namespace>\treturns a v5 UUID string for the given name and namespace
+minecraft-bedrock-utils uuid <name>\t\treturns a v5 UUID string for the given name with a default namespace
+minecraft-bedrock-utils uuid\t\t\treturns a v4 UUID string
+minecraft-bedrock-utils version\t\t\tshows current version number
+\n`;
+  console.log(usage);
 };
 
 switch (args[0]) {
@@ -52,14 +52,21 @@ switch (args[0]) {
     debug();
     break;
   case 'run':
-    files.copyDevelopmentFiles();
-    launch();
+    if (files.copyDevelopmentFiles()) {
+      launch();
+    }
+    break;
+  case 'info':
+    info.showInfo(args[1]);
     break;
   case 'launch':
     launch();
     break;
   case 'copy':
     files.copyDevelopmentFiles();
+    break;
+  case 'new':
+    project.newProject(args[1], args[2]);
     break;
   case 'uuid':
     console.log(uuid.getUUID(args[1], args[2]));

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Path Utils
+ * @fileoverview Minecraft Bedrock Utils - Path lib
  *
  * @license Copyright 2021 Markus Bordihn
  *
@@ -18,6 +18,7 @@
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
+const chalk = require('chalk');
 const fs = require('fs');
 const glob = require('glob');
 const path = require('path');
@@ -26,23 +27,33 @@ const getWorkingPath = () => {
   return process.cwd();
 };
 
-const getPossibleManifestInWorkingPath = () => {
+const getPossibleManifestInSearchPath = (search_path = exports.workingPath) => {
+  const searchPath = path.resolve(search_path);
   const result = [];
-  // If we found a manifest.json we will use this.
-  if (fs.existsSync('manifest.json')) {
-    return ['manifest.json'];
+  // If we found a manifest.json in root we will use this.
+  if (fs.existsSync(path.join(searchPath, 'manifest.json'))) {
+    return [path.join(searchPath, 'manifest.json')];
   }
   // Search for alternative manifest files.
-  glob.sync('**/manifest.json').map((file) => {
-    result.push(file);
-  });
+  glob
+    .sync(path.join(searchPath, '**/manifest.json'), {
+      nodir: true,
+    })
+    .map((file) => {
+      result.push(path.resolve(file));
+    });
   if (result.length > 0) {
     return result;
   }
 };
 
-const getPossibleBehaviorPackInWorkingPath = () => {
-  for (const file of exports.possibleManifestInWorkingPath || []) {
+const getPossibleManifestInWorkingPath = () => {
+  return getPossibleManifestInSearchPath(exports.workingPath);
+};
+
+const getPossibleBehaviorPackInSearchPath = (search_path) => {
+  const manifests = getPossibleManifestInSearchPath(search_path);
+  for (const file of manifests || []) {
     const manifestFile = fs.readFileSync(file);
     const manifest = JSON.parse(manifestFile);
     if (manifest.header && manifest.modules) {
@@ -55,8 +66,15 @@ const getPossibleBehaviorPackInWorkingPath = () => {
   }
 };
 
-const getPossibleResourcePackInWorkingPath = () => {
-  for (const file of exports.possibleManifestInWorkingPath || []) {
+const getPossibleBehaviorPackInWorkingPath = () => {
+  return getPossibleBehaviorPackInSearchPath(exports.workingPath);
+};
+
+const getPossibleResourcePackPackInSearchPath = (
+  search_path = exports.workingPath
+) => {
+  const manifests = getPossibleManifestInSearchPath(search_path);
+  for (const file of manifests || []) {
     const manifestFile = fs.readFileSync(file);
     const manifest = JSON.parse(manifestFile);
     if (manifest.header && manifest.modules) {
@@ -67,6 +85,10 @@ const getPossibleResourcePackInWorkingPath = () => {
       }
     }
   }
+};
+
+const getPossibleResourcePackInWorkingPath = () => {
+  return getPossibleResourcePackPackInSearchPath(exports.workingPath);
 };
 
 const getMinecraftPath = () => {
@@ -153,6 +175,24 @@ const getResourcePacksPath = () => {
   }
 };
 
+const normalizePathName = (name = '') => {
+  return name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
+};
+
+const createFolderIfNotExists = (folderPath, name) => {
+  const pathName = name ? path.join(folderPath, name) : folderPath;
+  if (!fs.existsSync(pathName)) {
+    fs.mkdir(pathName, (error) => {
+      if (error) {
+        return console.error(
+          chalk.red('Error creating new folder', pathName, ':', error)
+        );
+      }
+    });
+  }
+};
+
+// General path definitions
 exports.workingPath = getWorkingPath();
 exports.possibleManifestInWorkingPath = getPossibleManifestInWorkingPath();
 exports.possibleBehaviorPackInWorkingPath =
@@ -166,3 +206,12 @@ exports.developmentResourcePacksPath = getDevelopmentResourcePacksPath();
 exports.developmentSkinPacksPath = getDevelopmentSkinPacksPath();
 exports.behaviorPacksPath = getBehaviorPacksPath();
 exports.resourcePacksPath = getResourcePacksPath();
+
+// Helper functions
+exports.createFolderIfNotExists = createFolderIfNotExists;
+exports.getPossibleBehaviorPackInSearchPath =
+  getPossibleBehaviorPackInSearchPath;
+exports.getPossibleResourcePackPackInSearchPath =
+  getPossibleResourcePackPackInSearchPath;
+exports.getPossibleManifestInSearchPath = getPossibleManifestInSearchPath;
+exports.normalizePathName = normalizePathName;

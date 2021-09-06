@@ -10,7 +10,12 @@ enjoying development experience.
 ## Features
 
 Automatic detects the used behaviour pack and/or resource pack based on the
-_manifest.json file_.
+_manifest.json_ file.
+
+Easy and automatic creation of base files and _manifest.json_ files for new
+projects.
+
+![Example Screenshot](assets/new_project_example.jpg)
 
 ## Installation
 
@@ -24,7 +29,9 @@ npm install minecraft-bedrock-utils
 If you are working on several projects it's recommend to install the
 minecraft-bedrock-utils globally.
 
-## Recommended Project structure
+## Recommended structure
+
+### Recommended structure for existing projects
 
 The following folder structure is recommended for your projects.
 
@@ -39,6 +46,16 @@ You should execute the `npx minecraft-bedrock-utils <command>` command inside
 the project folder and not directly inside a behaviour pack or resource pack
 folder.
 
+### Recommended structure for new projects
+
+The following folder structure is recommended for new projects.
+
+- **Project Folder**
+  - **package.json** (for npm)
+
+Execute the command `npx minecraft-bedrock-utils new` inside the project folder
+to create the recommend structure.
+
 ## How to use the utils
 
 Use the **npx** command to run the utils with one of the commands in your
@@ -48,6 +65,20 @@ project folder.
 
 Commands are executed over the **npx** command for example
 `npx minecraft-bedrock-utils <command>` inside the project folder.
+
+### new
+
+The new commands creates a new project with the required folder and files. It
+should be only used for new projects and will give you and error if there are
+any existing behaviour or resource packs.
+
+To start a new project use `npx minecraft-bedrock-utils new` which will ask for
+additional details like:
+
+![Example Screenshot](assets/new_project_example.jpg)
+
+If you just want to add a basic project use the command
+`npx minecraft-bedrock-utils new <name>` instead.
 
 ### run
 
@@ -76,18 +107,26 @@ Example: `npx minecraft-bedrock-utils launch`
 
 ### uuid
 
-The uuid command returns a v4 UUID or v5 UUID string which could be used
-inside the **manifest.json** file.
+The uuid command returns a v4 UUID or v5 UUID string which could be used inside
+the **manifest.json** file.
 
 To get a basic v4 uuid use the following command:
 `npx minecraft-bedrock-utils uuid`
 
-To get an v5 uuid you need to provide a name and a corresponding namespace.
-If no namespace is provided it will use a default namespace.
+To get an v5 uuid you need to provide a name and a corresponding namespace. If
+no namespace is provided it will use a default namespace (for testing only!).
 
-Example:
-`npx minecraft-bedrock-utils uuid <name>`
-`npx minecraft-bedrock-utils uuid <name> <namespace>`
+Example: `npx minecraft-bedrock-utils uuid <name> <namespace>`
+
+### info
+
+Shows basic information about the detected behaviour and/or resource pack inside
+the project folder.
+
+Example: `npx minecraft-bedrock-utils info`
+
+It's possible to add a path to this command to compare several projects like
+`npx minecraft-bedrock-utils info <path>`
 
 ### debug
 
