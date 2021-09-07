@@ -1,4 +1,5 @@
 *.stackdump
+*.clip
 .DS_Store
 .c9
 .nyc_output

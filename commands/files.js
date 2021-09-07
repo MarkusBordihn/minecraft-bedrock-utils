@@ -74,7 +74,9 @@ const copyResourceDevelopmentFiles = () => {
 };
 
 const copyDevelopmentFiles = () => {
-  return copyResourceDevelopmentFiles() || copyBehaviourDevelopmentFiles();
+  const resourcePackResult = copyResourceDevelopmentFiles();
+  const behaviorPackResult = copyBehaviourDevelopmentFiles();
+  return resourcePackResult || behaviorPackResult;
 };
 
 exports.copyBehaviourDevelopmentFiles = copyBehaviourDevelopmentFiles;

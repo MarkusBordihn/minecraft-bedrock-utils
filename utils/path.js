@@ -18,7 +18,6 @@
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
-const chalk = require('chalk');
 const fs = require('fs');
 const glob = require('glob');
 const path = require('path');
@@ -179,20 +178,9 @@ const normalizePathName = (name = '') => {
   return name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
 };
 
-const createFolderIfNotExists = (folderPath, name) => {
-  const pathName = name ? path.join(folderPath, name) : folderPath;
-  if (!fs.existsSync(pathName)) {
-    fs.mkdir(pathName, (error) => {
-      if (error) {
-        return console.error(
-          chalk.red('Error creating new folder', pathName, ':', error)
-        );
-      }
-    });
-  }
-};
-
 // General path definitions
+exports.modulePath = path.resolve(__dirname, '..');
+exports.assetsPath = path.join(exports.modulePath, 'assets');
 exports.workingPath = getWorkingPath();
 exports.possibleManifestInWorkingPath = getPossibleManifestInWorkingPath();
 exports.possibleBehaviorPackInWorkingPath =
@@ -208,7 +196,6 @@ exports.behaviorPacksPath = getBehaviorPacksPath();
 exports.resourcePacksPath = getResourcePacksPath();
 
 // Helper functions
-exports.createFolderIfNotExists = createFolderIfNotExists;
 exports.getPossibleBehaviorPackInSearchPath =
   getPossibleBehaviorPackInSearchPath;
 exports.getPossibleResourcePackPackInSearchPath =

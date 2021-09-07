@@ -134,6 +134,27 @@ Shows some debug information mostly for troubleshooting like the detected path.
 
 Example: `npx minecraft-bedrock-utils launch`
 
+## Supported config options
+
+To make things easier to maintain it's possible to pre-define some of the values inside the *package.json*.
+These information are mostly used for creating new project and have less relevant afterwards.
+
+Example manifest.json:
+
+```json
+{
+  ...
+  "dependencies": {
+    "minecraft-bedrock-utils": "^1.1.1"
+  },
+  "config": {
+    "project_name": "Example 2D Item with Recipe",
+    "project_folder_name": "MB_Example_2D_Item_Recipe"
+  }
+  ...
+}
+```
+
 ## Disclaimer
 
 NOT OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG.
