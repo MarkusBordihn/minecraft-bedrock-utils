@@ -21,38 +21,36 @@
  */
 
 const args = process.argv.slice(2);
+
 const debug = require('./commands/debug.js');
-const uuid = require('./commands/uuid.js');
-const info = require('./commands/info.js');
-const project = require('./commands/project.js');
-const launch = require('./commands/launch.js');
 const files = require('./commands/files.js');
+const info = require('./commands/info.js');
+const item = require('./commands/item.js');
+const launch = require('./commands/launch.js');
+const project = require('./commands/project.js');
+const usage = require('./usage.js');
+const uuid = require('./commands/uuid.js');
 const { version } = require('./package.json');
 
-const showUsage = () => {
-  const usage = `minecraft-bedrock-utils <command>
-Usage:
-
-minecraft-bedrock-utils debug\t\t\tshows debug information
-minecraft-bedrock-utils info <path>\t\tshows info about specific project
-minecraft-bedrock-utils info\t\t\tshows info about current project
-minecraft-bedrock-utils run\t\t\tcopy behaviour and resource files
-minecraft-bedrock-utils new\t\t\tcreates a new project (interactive)
-minecraft-bedrock-utils new <name>\t\tcreates a new project with default options
-minecraft-bedrock-utils uuid <name> <namespace>\treturns a v5 UUID string for the given name and namespace
-minecraft-bedrock-utils uuid <name>\t\treturns a v5 UUID string for the given name with a default namespace
-minecraft-bedrock-utils uuid\t\t\treturns a v4 UUID string
-minecraft-bedrock-utils version\t\t\tshows current version number
-\n`;
-  console.log(usage);
-};
-
 switch (args[0]) {
+  case 'add':
+    if (args[1] == 'item') {
+      item.add(args[2]);
+    } else {
+      usage.showAddUsage();
+    }
+    break;
+  case 'list':
+    if (args[1] == 'items') {
+      item.list(args[2]);
+    }
+    break;
   case 'debug':
     debug();
     break;
   case 'run':
     if (files.copyDevelopmentFiles()) {
+      console.info('Please re-join the currently loaded world, if any!');
       launch();
     }
     break;
@@ -77,5 +75,5 @@ switch (args[0]) {
     console.log(version);
     break;
   default:
-    showUsage();
+    usage.showUsage();
 }

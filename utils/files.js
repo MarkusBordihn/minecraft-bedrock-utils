@@ -1,5 +1,5 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Path lib
+ * @fileoverview Minecraft Bedrock Utils - File lib
  *
  * @license Copyright 2021 Markus Bordihn
  *

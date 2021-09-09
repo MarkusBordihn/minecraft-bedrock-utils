@@ -17,7 +17,7 @@ projects.
 
 ![Example Screenshot](assets/new_project_example.jpg)
 
-## Installation
+## Installation (optional)
 
 The easiest way is to keep minecraft-bedrock-utils as a Dependency in your
 package.json, by running
@@ -40,7 +40,7 @@ The following folder structure is recommended for your projects.
     - manifest.json (for Minecraft)
   - **Resource Pack Folder**
     - manifest.json (for Minecraft)
-  - **package.json** (for npm)
+  - **package.json** (for npm / default values)
 
 You should execute the `npx minecraft-bedrock-utils <command>` command inside
 the project folder and not directly inside a behaviour pack or resource pack
@@ -132,12 +132,12 @@ It's possible to add a path to this command to compare several projects like
 
 Shows some debug information mostly for troubleshooting like the detected path.
 
-Example: `npx minecraft-bedrock-utils launch`
+Example: `npx minecraft-bedrock-utils debug`
 
 ## Supported config options
 
 To make things easier to maintain it's possible to pre-define some of the values inside the *package.json*.
-These information are mostly used for creating new project and have less relevant afterwards.
+These information are mostly used for creating new project and items and have less relevant afterwards.
 
 Example manifest.json:
 
@@ -149,7 +149,8 @@ Example manifest.json:
   },
   "config": {
     "project_name": "Example 2D Item with Recipe",
-    "project_folder_name": "MB_Example_2D_Item_Recipe"
+    "project_folder_name": "MB_Example_2D_Item_Recipe",
+    "project_namespace": "markusbordihn_examples"
   }
   ...
 }

@@ -181,6 +181,7 @@ const normalizePathName = (name = '') => {
 // General path definitions
 exports.modulePath = path.resolve(__dirname, '..');
 exports.assetsPath = path.join(exports.modulePath, 'assets');
+exports.assetsItemsPath = path.join(exports.modulePath, 'assets', 'items');
 exports.workingPath = getWorkingPath();
 exports.possibleManifestInWorkingPath = getPossibleManifestInWorkingPath();
 exports.possibleBehaviorPackInWorkingPath =

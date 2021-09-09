@@ -33,6 +33,10 @@ const copyBehaviourDevelopmentFiles = () => {
       defaultPath.developmentBehaviorPacksPath,
       path.basename(srcDir)
     );
+    if (fs.existsSync(targetDir)) {
+      console.log('Cleaning existing directory before copy...');
+      fs.emptyDirSync(targetDir);
+    }
     console.log(
       chalk.green('Copy behavior pack from', srcDir, 'to', targetDir, '...')
     );
@@ -58,6 +62,10 @@ const copyResourceDevelopmentFiles = () => {
       defaultPath.developmentResourcePacksPath,
       path.basename(srcDir)
     );
+    if (fs.existsSync(targetDir)) {
+      console.log('Cleaning existing directory before copy...');
+      fs.emptyDirSync(targetDir);
+    }
     console.log(
       chalk.green('Copy resource pack from', srcDir, 'to', targetDir, '...')
     );

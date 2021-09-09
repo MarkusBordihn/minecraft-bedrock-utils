@@ -26,6 +26,7 @@ const { v4: uuidv4 } = require('uuid');
 const readManifest = (file) => {
   if (!fs.existsSync(file)) {
     console.error(chalk.red('Unable to find manifest file at', file));
+    return;
   }
   const manifestFilePath = file.endsWith('manifest.json')
     ? file
@@ -91,6 +92,6 @@ const getManifest = (options = {}) => {
   return result;
 };
 
-exports.readManifest = readManifest;
 exports.createManifest = createManifest;
 exports.getManifest = getManifest;
+exports.readManifest = readManifest;

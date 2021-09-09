@@ -18,11 +18,10 @@
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
-const chalk = require('chalk');
 const defaultPath = require('../utils/path.js');
-const files = require('../utils/files.js');
-const manifest = require('../utils/manifest.js');
-const path = require('path');
+const enquirerHelper = require('../utils/enquirer');
+const packs = require('../utils/packs.js');
+const preChecks = require('../utils/preChecks.js');
 const { Form } = require('enquirer');
 
 const newProjectPrompt = new Form({
@@ -35,7 +34,7 @@ const newProjectPrompt = new Form({
       initial:
         process.env.npm_package_config_project_name ||
         process.env.npm_package_name ||
-        'New cool items',
+        'New cool project',
     },
     {
       name: 'nameDir',
@@ -79,7 +78,12 @@ const newProjectPrompt = new Form({
     {
       name: 'preCreateFiles',
       message: 'Pre-create folders and files like items, texts, ...',
-      initial: 'false',
+      format(input, choice) {
+        return enquirerHelper.formatBoolean(input, choice, this);
+      },
+      result(value, choice) {
+        return choice.enabled;
+      },
     },
   ],
 });
@@ -90,27 +94,7 @@ const newProjectPrompt = new Form({
  */
 const newProject = (name, options = {}) => {
   // Only create new projects if we don't found any existing projects.
-  const behaviorPackPath =
-    defaultPath.getPossibleBehaviorPackInSearchPath(name);
-  const resourcePackPath =
-    defaultPath.getPossibleResourcePackPackInSearchPath(name);
-  if (behaviorPackPath || resourcePackPath) {
-    if (behaviorPackPath) {
-      console.error(
-        chalk.red(
-          'Found already existing behavior pack under',
-          behaviorPackPath
-        )
-      );
-    }
-    if (resourcePackPath) {
-      console.error(
-        chalk.red(
-          'Found already existing resource pack under',
-          resourcePackPath
-        )
-      );
-    }
+  if (preChecks.errorExistingPack()) {
     console.error('Please fix the above issues to create a new project!');
     return;
   }
@@ -143,7 +127,7 @@ const newProject = (name, options = {}) => {
   );
 
   // 1.) Create resource pack
-  const resourcePackManifest = newResourcePack(name, {
+  const resourcePackManifest = packs.newResourcePack(name, {
     description: options.resourcePackDescription,
     minEngineVersion: minEngineVersion,
     nameDir: nameDir,
@@ -152,7 +136,7 @@ const newProject = (name, options = {}) => {
   });
 
   // 2.) Create behaviour pack with reference to resource pack
-  newBehaviourPack(name, {
+  packs.newBehaviourPack(name, {
     description: options.behaviourPackDescription,
     dependencies: [
       {
@@ -165,103 +149,6 @@ const newProject = (name, options = {}) => {
     preCreateFiles: options.preCreateFiles,
     version: version,
   });
-};
-
-/**
- * @param {String} name
- * @param {Object} options
- * @return {Object} manifest.json
- */
-const newBehaviourPack = (name, options = {}) => {
-  const packPathName =
-    defaultPath.normalizePathName(options.nameDir ? options.nameDir : name) +
-    '_BehaviourPack';
-  const manifestPathName = path.join(packPathName, 'manifest.json');
-  console.log(
-    'Creating new BehaviourPack',
-    chalk.green(name),
-    'under',
-    packPathName,
-    '...'
-  );
-
-  // Create project folder
-  files.createFolderIfNotExists(packPathName);
-
-  // Create additional files
-  if (options.preCreateFiles == 'true' || options.preCreateFiles == 'yes') {
-    files.createFolderIfNotExists(packPathName, 'items');
-    files.createFolderIfNotExists(packPathName, 'recipes');
-    files.copyFileIfNotExists(
-      path.join(defaultPath.assetsPath, 'behaviour_pack.png'),
-      path.join(packPathName, 'pack_icon.png')
-    );
-  }
-
-  // Autocomplete Options if needed
-  if (!options.name) {
-    options.name = name;
-  }
-  if (!options.type) {
-    options.type = 'behaviour';
-  }
-
-  // Add default pack_icon.png
-
-  // Create and return manifest.json
-  return manifest.createManifest(manifestPathName, options);
-};
-
-/**
- * @param {String} name
- * @param {Object} options
- * @return {Object} manifest.json
- */
-const newResourcePack = (name, options = {}) => {
-  const packPathName =
-    defaultPath.normalizePathName(options.nameDir ? options.nameDir : name) +
-    '_ResourcePack';
-  const manifestPathName = path.join(packPathName, 'manifest.json');
-  console.log(
-    'Creating new ResourcePack',
-    chalk.green(name),
-    'under',
-    packPathName,
-    '...'
-  );
-
-  // Create project folder
-  files.createFolderIfNotExists(packPathName);
-
-  // Autocomplete Options if needed
-  if (!options.name) {
-    options.name = name;
-  }
-  if (!options.type) {
-    options.type = 'resource';
-  }
-
-  // Create additional files
-  if (options.preCreateFiles == 'true' || options.preCreateFiles == 'yes') {
-    files.createFolderIfNotExists(packPathName, 'items');
-    files.createFolderIfNotExists(packPathName, 'texts');
-    files.createFileIfNotExists(path.join(packPathName, 'texts'), 'en_US.lang');
-    files.createFolderIfNotExists(packPathName, 'textures');
-    files.createFileIfNotExists(
-      path.join(packPathName, 'textures'),
-      'item_texture.json',
-      '{\n  "resource_pack_name": "Texture pack for ' + name + '",\n}\n'
-    );
-    files.copyFileIfNotExists(
-      path.join(defaultPath.assetsPath, 'resource_pack.png'),
-      path.join(packPathName, 'pack_icon.png')
-    );
-  }
-
-  // Add default pack_icon.png
-
-  // Create and return manifest.json
-  return manifest.createManifest(manifestPathName, options);
 };
 
 exports.newProject = newProject;
