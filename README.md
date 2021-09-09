@@ -80,6 +80,14 @@ additional details like:
 If you just want to add a basic project use the command
 `npx minecraft-bedrock-utils new <name>` instead.
 
+### add item
+
+The add item commands adds a new items to the project with some default options.
+
+Example: `npx minecraft-bedrock-utils add item`
+
+![Example Screenshot](assets/new_item_example.jpg)
+
 ### run
 
 The run commands copies the behaviour pack and/or resource pack of the current
@@ -90,6 +98,8 @@ After the step is done it tries to start Minecraft Bedrock, if it was not
 already started.
 
 Example: `npx minecraft-bedrock-utils run`
+
+Note: Please make sure to reload the world after this step is done.
 
 ### copy
 
