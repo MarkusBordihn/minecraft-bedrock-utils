@@ -23,7 +23,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const defaultPath = require('../utils/path.js');
 
-const copyBehaviourDevelopmentFiles = () => {
+const copyBehaviorDevelopmentFiles = () => {
   if (
     defaultPath.possibleBehaviorPackInWorkingPath &&
     defaultPath.developmentBehaviorPacksPath
@@ -83,10 +83,10 @@ const copyResourceDevelopmentFiles = () => {
 
 const copyDevelopmentFiles = () => {
   const resourcePackResult = copyResourceDevelopmentFiles();
-  const behaviorPackResult = copyBehaviourDevelopmentFiles();
+  const behaviorPackResult = copyBehaviorDevelopmentFiles();
   return resourcePackResult || behaviorPackResult;
 };
 
-exports.copyBehaviourDevelopmentFiles = copyBehaviourDevelopmentFiles;
+exports.copyBehaviorDevelopmentFiles = copyBehaviorDevelopmentFiles;
 exports.copyDevelopmentFiles = copyDevelopmentFiles;
 exports.copyResourceDevelopmentFiles = copyResourceDevelopmentFiles;

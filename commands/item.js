@@ -19,6 +19,7 @@
  */
 
 const chalk = require('chalk');
+const compareVersions = require('compare-versions');
 const items = require('../utils/items.js');
 const preChecks = require('../utils/preChecks.js');
 const prompts = require('./itemPrompts.js');
@@ -41,9 +42,24 @@ const add = (name, options = {}) => {
     prompts.newItem
       .run()
       .then((type) => {
+        console.log(
+          '🏷️  = placeholder\t🧪 = experimental (format version >= 1.16.100)'
+        );
         switch (type) {
+          case 'digger':
+            prompts.newDiggerItem
+              .run()
+              .then((answers) => add(answers.name, answers))
+              .catch(console.error);
+            break;
           case 'food':
             prompts.newFoodItem
+              .run()
+              .then((answers) => add(answers.name, answers))
+              .catch(console.error);
+            break;
+          case 'fuel':
+            prompts.newFuelItem
               .run()
               .then((answers) => add(answers.name, answers))
               .catch(console.error);
@@ -61,7 +77,7 @@ const add = (name, options = {}) => {
     return;
   }
   // Only create new item if we don't found any existing item.
-  if (items.existingItem()) {
+  if (items.existingItem(name, options.namespace)) {
     console.error(
       chalk.red(
         `Item ${items.getItemId(name, options.namespace)} already exists ...`
@@ -71,6 +87,12 @@ const add = (name, options = {}) => {
   }
   if (!options.name) {
     options.name = name;
+  }
+
+  // Warn user if this required an experimental flag
+  if (compareVersions.compare(options.format_version, '1.16.100', '>=')) {
+    console.warn(`\n⚠️ Note: The format version ${options.format_version} requires to enable the "Holiday Creator Features" under Experiments!
+See: https://feedback.minecraft.net/hc/en-us/articles/4403610710797\n`);
   }
 
   items.createItem(name, options);

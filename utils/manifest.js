@@ -69,14 +69,14 @@ const getManifest = (options = {}) => {
   }
 
   // Handle different types of manifest
-  if (options.type == 'behaviour') {
+  if (options.type == 'behavior') {
     result.modules.push({
       type: 'data',
       uuid: uuidv4(),
       version: options.version || [1, 0, 0],
     });
     if (!result.header.description) {
-      result.header.description = 'Behaviour Pack for ' + options.name;
+      result.header.description = 'Behavior Pack for ' + options.name;
     }
   } else if (options.type == 'resource') {
     result.modules.push({

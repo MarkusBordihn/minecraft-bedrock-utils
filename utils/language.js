@@ -27,7 +27,7 @@ const addLanguageText = (file, name, text) => {
   const formattedName = `${name}=`;
   if (languageFileContent.includes(formattedName)) {
     console.error(
-      chalk.red('Entry "', name, '" already exists in language file', file)
+      chalk.red('Entry', name, 'already exists in language file', file)
     );
     return;
   }

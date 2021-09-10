@@ -9,7 +9,7 @@ enjoying development experience.
 
 ## Features
 
-Automatic detects the used behaviour pack and/or resource pack based on the
+Automatic detects the used behavior pack and/or resource pack based on the
 _manifest.json_ file.
 
 Easy and automatic creation of base files and _manifest.json_ files for new
@@ -36,14 +36,14 @@ minecraft-bedrock-utils globally.
 The following folder structure is recommended for your projects.
 
 - **Project Folder**
-  - **Behaviour Pack Folder**
+  - **Behavior Pack Folder**
     - manifest.json (for Minecraft)
   - **Resource Pack Folder**
     - manifest.json (for Minecraft)
   - **package.json** (for npm / default values)
 
 You should execute the `npx minecraft-bedrock-utils <command>` command inside
-the project folder and not directly inside a behaviour pack or resource pack
+the project folder and not directly inside a behavior pack or resource pack
 folder.
 
 ### Recommended structure for new projects
@@ -70,7 +70,7 @@ Commands are executed over the **npx** command for example
 
 The new commands creates a new project with the required folder and files. It
 should be only used for new projects and will give you and error if there are
-any existing behaviour or resource packs.
+any existing behavior or resource packs.
 
 To start a new project use `npx minecraft-bedrock-utils new` which will ask for
 additional details like:
@@ -82,7 +82,7 @@ If you just want to add a basic project use the command
 
 ### add item
 
-The add item commands adds a new items to the project with some default options.
+This commands adds a new items to the project with some default options.
 
 Example: `npx minecraft-bedrock-utils add item`
 
@@ -90,8 +90,8 @@ Example: `npx minecraft-bedrock-utils add item`
 
 ### run
 
-The run commands copies the behaviour pack and/or resource pack of the current
-directory into the developer behaviour pack and/or developer resource pack
+The run commands copies the behavior pack and/or resource pack of the current
+directory into the developer behavior pack and/or developer resource pack
 folders.
 
 After the step is done it tries to start Minecraft Bedrock, if it was not
@@ -103,8 +103,8 @@ Note: Please make sure to reload the world after this step is done.
 
 ### copy
 
-The copy commands copies the behaviour pack and/or resource pack of the current
-directory into the developer behaviour pack and/or developer resource pack
+The copy commands copies the behavior pack and/or resource pack of the current
+directory into the developer behavior pack and/or developer resource pack
 folders.
 
 Example: `npx minecraft-bedrock-utils copy`
@@ -130,7 +130,7 @@ Example: `npx minecraft-bedrock-utils uuid <name> <namespace>`
 
 ### info
 
-Shows basic information about the detected behaviour and/or resource pack inside
+Shows basic information about the detected behavior and/or resource pack inside
 the project folder.
 
 Example: `npx minecraft-bedrock-utils info`

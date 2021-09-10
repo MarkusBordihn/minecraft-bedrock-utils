@@ -42,7 +42,7 @@ ${command} new <name>\t\t${chalk.grey(
     'creates a new project with default options'
   )}
 ${command} new\t\t\t${chalk.grey('creates a new project (interactive)')}
-${command} run\t\t\t${chalk.grey('copy behaviour and resource files')}
+${command} run\t\t\t${chalk.grey('copy behavior and resource files')}
 ${command} uuid <name> <namespace>\t${chalk.grey(
     'returns a v5 UUID string for the given name and namespace'
   )}

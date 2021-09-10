@@ -29,13 +29,13 @@ const path = require('path');
  * @param {Object} options
  * @return {Object} manifest.json
  */
-const newBehaviourPack = (name, options = {}) => {
+const newBehaviorPack = (name, options = {}) => {
   const packPathName =
     defaultPath.normalizePathName(options.nameDir ? options.nameDir : name) +
-    '_BehaviourPack';
+    '_BehaviorPack';
   const manifestPathName = path.join(packPathName, 'manifest.json');
   console.log(
-    'Creating new BehaviourPack',
+    'Creating new BehaviorPack',
     chalk.green(name),
     'under',
     packPathName,
@@ -50,7 +50,7 @@ const newBehaviourPack = (name, options = {}) => {
     files.createFolderIfNotExists(packPathName, 'items');
     files.createFolderIfNotExists(packPathName, 'recipes');
     files.copyFileIfNotExists(
-      path.join(defaultPath.assetsPath, 'behaviour_pack.png'),
+      path.join(defaultPath.assetsPath, 'behavior_pack.png'),
       path.join(packPathName, 'pack_icon.png')
     );
   }
@@ -60,7 +60,7 @@ const newBehaviourPack = (name, options = {}) => {
     options.name = name;
   }
   if (!options.type) {
-    options.type = 'behaviour';
+    options.type = 'behavior';
   }
 
   // Create and return manifest.json
@@ -132,5 +132,5 @@ const newResourcePack = (name, options = {}) => {
   return manifest.createManifest(manifestPathName, options);
 };
 
-exports.newBehaviourPack = newBehaviourPack;
+exports.newBehaviorPack = newBehaviorPack;
 exports.newResourcePack = newResourcePack;

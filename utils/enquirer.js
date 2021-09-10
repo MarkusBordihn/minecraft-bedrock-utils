@@ -18,14 +18,32 @@
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
+const spaceBarHint = ' (toggle with space)';
+
 const formatBoolean = (input, choice, scope) => {
   choice.input = '';
   choice.cursor = 0;
   const { noop, success, dark } = scope.styles;
   const check = () =>
     choice.enabled
-      ? success('true') + dark(' (toggle with space)')
-      : noop('false') + dark(' (toggle with space)');
+      ? success('true') + '\t' + dark(spaceBarHint)
+      : noop('false') + '\t' + dark(spaceBarHint);
+  if (input !== ' ') {
+    scope.alert();
+    return check();
+  }
+  choice.enabled = !choice.enabled;
+  return check();
+};
+
+const formatOptional = (input, choice, scope) => {
+  choice.input = '';
+  choice.cursor = 0;
+  const { noop, success, dark } = scope.styles;
+  const check = () =>
+    choice.enabled
+      ? success('true') + ' 🏷️\t ' + dark(spaceBarHint)
+      : noop('false') + ' 🏷️\t ' + dark(spaceBarHint);
   if (input !== ' ') {
     scope.alert();
     return check();
@@ -35,3 +53,4 @@ const formatBoolean = (input, choice, scope) => {
 };
 
 exports.formatBoolean = formatBoolean;
+exports.formatOptional = formatOptional;

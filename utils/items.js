@@ -19,14 +19,17 @@
  */
 
 const chalk = require('chalk');
+const compareVersions = require('compare-versions');
 const defaultPath = require('../utils/path.js');
 const files = require('./files.js');
 const fs = require('fs');
 const glob = require('glob');
 const language = require('./language.js');
 const path = require('path');
+const { config } = require('process');
 
 const defaultNamespace = 'my_items';
+const defaultFormatVersion = '1.16.1';
 
 const createItem = (name, options = {}) => {
   const behaviorPackPath = defaultPath.possibleBehaviorPackInWorkingPath;
@@ -37,18 +40,20 @@ const createItem = (name, options = {}) => {
   // Creative Item Config in behavior pack
   files.createFolderIfNotExists(behaviorPackPath, 'items');
   options.context = 'behavior';
-  const itemBehavior = createItemConfig(
+  createItemConfig(
     path.join(behaviorPackPath, 'items', `${itemName}.json`),
     options
   );
 
-  // Creative Item Config in resource pack
-  files.createFolderIfNotExists(resourcePackPath, 'items');
-  options.context = 'resource';
-  const itemResource = createItemConfig(
-    path.join(resourcePackPath, 'items', `${itemName}.json`),
-    options
-  );
+  // Creative Item Config in resource pack, if needed
+  if (compareVersions.compare(options.format_version, '1.16.100', '<')) {
+    files.createFolderIfNotExists(resourcePackPath, 'items');
+    options.context = 'resource';
+    createItemConfig(
+      path.join(resourcePackPath, 'items', `${itemName}.json`),
+      options
+    );
+  }
 
   // Create Texture Entry
   const texturePath = path.join(resourcePackPath, 'textures');
@@ -72,8 +77,6 @@ const createItem = (name, options = {}) => {
     `item.${itemId}.name`,
     options.name
   );
-
-  console.log(itemBehavior, itemResource);
 };
 
 const createItemTextureConfig = (file, name) => {
@@ -92,6 +95,11 @@ const createItemTextureConfig = (file, name) => {
   fs.writeFileSync(file, JSON.stringify(content, null, 2));
 };
 
+/**
+ * @param {String} file
+ * @param {Object} options
+ * @return {Object} Item Definition
+ */
 const createItemConfig = (file, options = {}) => {
   if (fs.existsSync(file)) {
     if (!options.overwrite) {
@@ -106,12 +114,20 @@ const createItemConfig = (file, options = {}) => {
   return item;
 };
 
+/**
+ * @param {Object} options
+ * @return {Object} Item Definition
+ */
 const getItemConfig = (options = {}) => {
   const name = options.name || 'my_item';
   const itemName = normalizeItemName(name);
   const itemId = getItemId(name, options.namespace);
+  const formatVersion = options.format_version || defaultFormatVersion;
+  const legacyVersion = compareVersions.compare(formatVersion, '1.16.100', '<');
+  const isResourceConfig = options.context == 'resource';
+  const isBehaviorConfig = options.context == 'behavior';
   const result = {
-    format_version: '1.16',
+    format_version: formatVersion,
     'minecraft:item': {
       description: {
         identifier: itemId,
@@ -120,33 +136,93 @@ const getItemConfig = (options = {}) => {
     },
   };
 
-  // Handles resource specific options
-  if (options.context == 'resource') {
-    result['minecraft:item'].components['minecraft:icon'] = itemName;
+  // Handles item descriptions based on format version
+  if (
+    (legacyVersion && isResourceConfig) ||
+    (!legacyVersion && isBehaviorConfig)
+  ) {
     switch (options.type) {
+      case 'digger':
+        result['minecraft:item'].description.category = 'equipment';
+        break;
       case 'food':
         result['minecraft:item'].description.category = 'nature';
-        result['minecraft:item'].components['minecraft:use_animation'] = 'eat';
         break;
+      case 'fuel':
       default:
         result['minecraft:item'].description.category = 'items';
     }
+  }
+
+  // Handles icon and name specific options for version 1.16.100 and higher
+  if (legacyVersion && isResourceConfig) {
+    result['minecraft:item'].components['minecraft:icon'] = itemName;
+  } else if (!legacyVersion && isBehaviorConfig) {
+    result['minecraft:item'].components['minecraft:icon'] = {
+      texture: itemName,
+    };
+    result['minecraft:item'].components['minecraft:display_name'] = {
+      value: `item.${itemId}.name`,
+    };
+  }
+
+  // Handle additional specific options
+
+  // Skip rest of config for resource config
+  if (isResourceConfig) {
     return result;
   }
 
-  // Handle behaviour specific options
+  // Handle behavior specific options
   if (options.use_duration) {
     result['minecraft:item'].components['minecraft:use_duration'] = parseInt(
       options.use_duration
     );
   }
+  if (
+    options.use_animation &&
+    ((legacyVersion && isResourceConfig) || !legacyVersion)
+  ) {
+    result['minecraft:item'].components['minecraft:use_animation'] =
+      options.use_animation;
+  }
+  if (options.hand_equipped) {
+    result['minecraft:item'].components['minecraft:hand_equipped'] = true;
+  }
+  if (options.max_stack_size) {
+    result['minecraft:item'].components['minecraft:max_stack_size'] = parseInt(
+      options.max_stack_size
+    );
+  }
+
+  // Type specific options
   switch (options.type) {
+    case 'digger':
+      result['minecraft:item'].components['minecraft:digger'] = {
+        use_efficiency: options.use_efficiency || false,
+      };
+      if (options.destroy_speeds) {
+        result['minecraft:item'].components['minecraft:digger'].destroy_speeds =
+          [];
+      }
+      if (config.on_dig) {
+        result['minecraft:item'].components['minecraft:digger'].on_dig = '';
+      }
+      break;
     case 'food':
       result['minecraft:item'].components['minecraft:food'] = {
         can_always_eat: options.can_always_eat || false,
         nutrition: parseInt(options.nutrition),
         saturation_modifier: options.saturation_modifier || 'normal',
         using_converts_to: options.using_converts_to || '',
+      };
+      if (options.effects) {
+        result['minecraft:item'].components['minecraft:food'].effects = [];
+      }
+      break;
+    case 'fuel':
+      result['minecraft:item'].components['minecraft:fuel'] = {
+        duration: parseInt(options.duration),
       };
       break;
   }
@@ -165,7 +241,7 @@ const getItems = (search_path = defaultPath.workingPath) => {
   }
   const items = {};
 
-  // Search for items inside behaviour pack.
+  // Search for items inside behavior pack.
   glob
     .sync(path.join(behaviorPackPath, 'items/*.json'), {
       nodir: true,

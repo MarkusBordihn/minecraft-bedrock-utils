@@ -53,10 +53,10 @@ const newProjectPrompt = new Form({
       initial: process.env.npm_package_version || '1.0.0',
     },
     {
-      name: 'behaviourPackDescription',
-      message: 'Behaviour Pack Description',
+      name: 'behaviorPackDescription',
+      message: 'Behavior Pack Description',
       initial:
-        'Behaviour Pack for ' +
+        'Behavior Pack for ' +
         (process.env.npm_package_config_project_name ||
           process.env.npm_package_name ||
           'New cool items'),
@@ -78,6 +78,7 @@ const newProjectPrompt = new Form({
     {
       name: 'preCreateFiles',
       message: 'Pre-create folders and files like items, texts, ...',
+      enabled: false,
       format(input, choice) {
         return enquirerHelper.formatBoolean(input, choice, this);
       },
@@ -135,9 +136,9 @@ const newProject = (name, options = {}) => {
     version: version,
   });
 
-  // 2.) Create behaviour pack with reference to resource pack
-  packs.newBehaviourPack(name, {
-    description: options.behaviourPackDescription,
+  // 2.) Create behavior pack with reference to resource pack
+  packs.newBehaviorPack(name, {
+    description: options.behaviorPackDescription,
     dependencies: [
       {
         uuid: resourcePackManifest.header.uuid,
