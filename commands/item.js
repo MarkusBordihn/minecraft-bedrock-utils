@@ -64,6 +64,18 @@ const add = (name, options = {}) => {
               .then((answers) => add(answers.name, answers))
               .catch(console.error);
             break;
+          case 'throwable':
+            prompts.newThrowableItem
+              .run()
+              .then((answers) => add(answers.name, answers))
+              .catch(console.error);
+            break;
+          case 'weapon':
+            prompts.newWeaponItem
+              .run()
+              .then((answers) => add(answers.name, answers))
+              .catch(console.error);
+            break;
           case 'other':
           default:
             prompts.newCustomItem

@@ -31,6 +31,10 @@ const { config } = require('process');
 const defaultNamespace = 'my_items';
 const defaultFormatVersion = '1.16.1';
 
+/**
+ * @param {String} name
+ * @param {Object} options
+ */
 const createItem = (name, options = {}) => {
   const behaviorPackPath = defaultPath.possibleBehaviorPackInWorkingPath;
   const resourcePackPath = defaultPath.possibleResourcePackInWorkingPath;
@@ -79,6 +83,10 @@ const createItem = (name, options = {}) => {
   );
 };
 
+/**
+ * @param {String} file
+ * @param {String} name
+ */
 const createItemTextureConfig = (file, name) => {
   let content = {
     resource_pack_name: 'Texture pack',
@@ -136,13 +144,15 @@ const getItemConfig = (options = {}) => {
     },
   };
 
-  // Handles item descriptions based on format version
+  // Handles shared legacy and upcoming specific options
   if (
     (legacyVersion && isResourceConfig) ||
     (!legacyVersion && isBehaviorConfig)
   ) {
+    // Handles item descriptions based on format version
     switch (options.type) {
       case 'digger':
+      case 'weapon':
         result['minecraft:item'].description.category = 'equipment';
         break;
       case 'food':
@@ -152,21 +162,31 @@ const getItemConfig = (options = {}) => {
       default:
         result['minecraft:item'].description.category = 'items';
     }
-  }
 
-  // Handles icon and name specific options for version 1.16.100 and higher
-  if (legacyVersion && isResourceConfig) {
-    result['minecraft:item'].components['minecraft:icon'] = itemName;
-  } else if (!legacyVersion && isBehaviorConfig) {
-    result['minecraft:item'].components['minecraft:icon'] = {
-      texture: itemName,
-    };
-    result['minecraft:item'].components['minecraft:display_name'] = {
-      value: `item.${itemId}.name`,
-    };
-  }
+    // Handles icon and name specific options
+    result['minecraft:item'].components['minecraft:icon'] = isResourceConfig
+      ? itemName
+      : {
+          texture: itemName,
+        };
+    if (isBehaviorConfig) {
+      result['minecraft:item'].components['minecraft:display_name'] = {
+        value: `item.${itemId}.name`,
+      };
+    }
 
-  // Handle additional specific options
+    // Handles general options
+    if (options.render_offsets) {
+      result['minecraft:item'].components['minecraft:render_offsets'] =
+        isResourceConfig
+          ? options.render_offsets
+          : { main_hand: [0, 0, 0], off_hand: [0, 0, 0] };
+    }
+    if (options.use_animation) {
+      result['minecraft:item'].components['minecraft:use_animation'] =
+        options.use_animation;
+    }
+  }
 
   // Skip rest of config for resource config
   if (isResourceConfig) {
@@ -179,12 +199,15 @@ const getItemConfig = (options = {}) => {
       options.use_duration
     );
   }
-  if (
-    options.use_animation &&
-    ((legacyVersion && isResourceConfig) || !legacyVersion)
-  ) {
-    result['minecraft:item'].components['minecraft:use_animation'] =
-      options.use_animation;
+  if (options.damage) {
+    result['minecraft:item'].components['minecraft:damage'] = parseInt(
+      options.damage
+    );
+  }
+  if (options.foil) {
+    result['minecraft:item'].components['minecraft:foil'] = parseInt(
+      options.foil
+    );
   }
   if (options.hand_equipped) {
     result['minecraft:item'].components['minecraft:hand_equipped'] = true;
@@ -224,6 +247,32 @@ const getItemConfig = (options = {}) => {
       result['minecraft:item'].components['minecraft:fuel'] = {
         duration: parseInt(options.duration),
       };
+      break;
+    case 'throwable':
+      result['minecraft:item'].components['minecraft:throwable'] = {
+        do_swing_animation: options.do_swing_animation || false,
+        launch_power_scale: parseFloat(options.launch_power_scale) || 1.0,
+        max_draw_duration: parseFloat(options.max_draw_duration) || 0.0,
+        max_launch_power: parseFloat(options.max_launch_power) || 1.0,
+        min_draw_duration: parseFloat(options.min_draw_duration) || 0.0,
+        scale_power_by_draw_duration: false,
+      };
+      break;
+    case 'weapon':
+      result['minecraft:item'].components['minecraft:weapon'] = {};
+      if (options.on_hit_block) {
+        result['minecraft:item'].components['minecraft:weapon'].on_hit_block =
+          options.on_hit_block;
+      }
+      if (options.on_hurt_entity) {
+        result['minecraft:item'].components['minecraft:weapon'].on_hurt_entity =
+          options.on_hurt_entity;
+      }
+      if (options.on_not_hurt_entity) {
+        result['minecraft:item'].components[
+          'minecraft:weapon'
+        ].on_not_hurt_entity = options.on_not_hurt_entity;
+      }
       break;
   }
 

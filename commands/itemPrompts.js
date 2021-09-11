@@ -67,6 +67,17 @@ const newItemTemplate = (name, type = 'other', choices = []) => {
         message: 'Format Version',
         initial: '1.16.1',
       },
+      {
+        name: 'foil',
+        message: 'Foil 🧪',
+        enabled: false,
+        format(input, choice) {
+          return enquirerHelper.formatBoolean(input, choice, this);
+        },
+        result(value, choice) {
+          return choice.enabled;
+        },
+      },
     ],
   };
   if (choices.length > 0) {
@@ -119,7 +130,6 @@ exports.newItem = new Select({
     {
       name: 'weapon',
       message: '  ⚔️\t  Weapon item (e.g. axe, sword, ...)',
-      disabled: true,
     },
     {
       name: 'wearable',
@@ -235,6 +245,94 @@ exports.newFuelItem = new Form(
       name: 'duration',
       message: 'Duration 🧪',
       initial: '3',
+    },
+  ])
+);
+
+exports.newThrowableItem = new Form(
+  newItemTemplate('throwable item', 'throwable', [
+    {
+      name: 'do_swing_animation 🧪',
+      message: 'Do swing animation',
+      enabled: false,
+      format(input, choice) {
+        return enquirerHelper.formatBoolean(input, choice, this);
+      },
+      result(value, choice) {
+        return choice.enabled;
+      },
+    },
+    {
+      name: 'launch_power_scale',
+      message: 'Launch power scale 🧪',
+      initial: '1.0',
+    },
+    {
+      name: 'max_draw_duration',
+      message: 'Max draw duration 🧪',
+      initial: '0.0',
+    },
+    {
+      name: 'max_launch_power',
+      message: 'Max launch power 🧪',
+      initial: '1.0',
+    },
+    {
+      name: 'min_draw_duration',
+      message: 'Min draw duration 🧪',
+      initial: '0.0',
+    },
+    {
+      name: 'scale_power_by_draw_duration	 🧪',
+      message: 'Scale power by draw duration',
+      enabled: false,
+      format(input, choice) {
+        return enquirerHelper.formatBoolean(input, choice, this);
+      },
+      result(value, choice) {
+        return choice.enabled;
+      },
+    },
+  ])
+);
+
+exports.newWeaponItem = new Form(
+  newItemTemplate('weapon item', 'weapon', [
+    {
+      name: 'on_hit_block',
+      message: 'On hit block 🧪',
+      initial: '',
+    },
+    {
+      name: 'on_hurt_entity',
+      message: 'On hurt entity 🧪',
+      initial: '',
+    },
+    {
+      name: 'on_not_hurt_entity',
+      message: 'On not hurt entity 🧪',
+      initial: '',
+    },
+    {
+      name: 'damage',
+      message: 'Damage 🧪',
+      initial: '',
+    },
+    {
+      name: 'hand_equipped',
+      message: 'Hand equipped',
+      enabled: true,
+      format(input, choice) {
+        return enquirerHelper.formatBoolean(input, choice, this);
+      },
+      result(value, choice) {
+        return choice.enabled;
+      },
+    },
+    {
+      name: 'max_stack_size',
+      message: 'Max stack size',
+      initial: '1',
     },
   ])
 );
