@@ -1,5 +1,5 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Add item command prompts
+ * @fileoverview Minecraft Bedrock Utils - Item command prompts
  *
  * @license Copyright 2021 Markus Bordihn
  *
@@ -21,17 +21,53 @@
 const defaultPath = require('../utils/path.js');
 const enquirerHelper = require('../utils/enquirer');
 const fs = require('fs');
+const items = require('../utils/items.js');
 const path = require('path');
 const { Form, Select } = require('enquirer');
 
-const newItemTemplate = (name, type = 'other', choices = []) => {
+const stableVersion = '1.16.1';
+const experimentalVersion = '1.16.100';
+
+const getItemTypeIcon = (type) => {
+  switch (type) {
+    case 'armor':
+      return '🛡️';
+    case 'blockPlacer':
+      return '🔲';
+    case 'digger':
+      return '⛏️';
+    case 'food':
+      return '🍎';
+    case 'fuel':
+      return '🛢️';
+    case 'throwable':
+      return '❄️';
+    case 'weapon':
+      return '⚔️';
+    default:
+      return '';
+  }
+};
+
+const getItemTypeIconForSelection = (type) => {
+  return `  ${getItemTypeIcon(type)}\t`;
+};
+
+const newItemTemplate = (
+  name,
+  type = 'other',
+  version = stableVersion,
+  choices = []
+) => {
   const result = {
     name: type,
-    message: `Please provide the following information for the ${name}:`,
+    message: `Please provide the following information for the ${name} ${getItemTypeIcon(
+      type
+    )}`,
     choices: [
       {
         name: 'type',
-        message: 'Item Type',
+        message: `Item Type`,
         initial: type,
         hidden: true,
       },
@@ -46,7 +82,7 @@ const newItemTemplate = (name, type = 'other', choices = []) => {
               path.join(
                 defaultPath.possibleBehaviorPackInWorkingPath,
                 'items',
-                `${value}.json`
+                `${items.normalizeName(value)}.json`
               )
             )
           ) {
@@ -65,7 +101,7 @@ const newItemTemplate = (name, type = 'other', choices = []) => {
       {
         name: 'format_version',
         message: 'Format Version',
-        initial: '1.16.1',
+        initial: version,
       },
       {
         name: 'foil',
@@ -93,17 +129,23 @@ exports.newItem = new Select({
     { name: 'other', message: '  ✏️\t  Custom item (e.g. custom items)' },
     {
       name: 'armor',
-      message: '  🛡️\t  Armor item (e.g. helmet, chestplate, ...)',
+      message: `${getItemTypeIconForSelection(
+        'armor'
+      )}  Armor item (e.g. helmet, chestplate, ...)`,
       disabled: true,
     },
     {
-      name: 'blockPlayer',
-      message: '  🔲\t Planter item for blocks (e.g. seeds)',
+      name: 'blockPlacer',
+      message: `${getItemTypeIconForSelection(
+        'blockPlacer'
+      )} Planter item for blocks (e.g. seeds)`,
       disabled: true,
     },
     {
       name: 'digger',
-      message: '  ⛏️\t  Digger item (e.g. pickaxe)',
+      message: `${getItemTypeIconForSelection(
+        'digger'
+      )}  Digger item (e.g. pickaxe)`,
     },
     {
       name: 'dyePowder',
@@ -115,8 +157,14 @@ exports.newItem = new Select({
       message: '  🕷️\t  Planter item for entities (e.g. spider on web)',
       disabled: true,
     },
-    { name: 'food', message: '  🍎\t Food item (e.g. apple)' },
-    { name: 'fuel', message: '  🛢️\t  Fuel item (e.g. coal)' },
+    {
+      name: 'food',
+      message: `${getItemTypeIconForSelection('food')} Food item (e.g. apple)`,
+    },
+    {
+      name: 'fuel',
+      message: `${getItemTypeIconForSelection('fuel')}  Fuel item (e.g. coal)`,
+    },
     {
       name: 'projectile',
       message: '  🏹\t Projectile item (e.g. arrow)',
@@ -125,7 +173,6 @@ exports.newItem = new Select({
     {
       name: 'throwable',
       message: '  ❄️\t  Throwable item (e.g. snowball)',
-      disabled: true,
     },
     {
       name: 'weapon',
@@ -140,7 +187,7 @@ exports.newItem = new Select({
 });
 
 exports.newDiggerItem = new Form(
-  newItemTemplate('digger item', 'digger', [
+  newItemTemplate('digger item', 'digger', experimentalVersion, [
     {
       name: 'use_efficiency',
       message: 'Use Efficiency 🧪',
@@ -188,7 +235,7 @@ exports.newDiggerItem = new Form(
 );
 
 exports.newFoodItem = new Form(
-  newItemTemplate('food item', 'food', [
+  newItemTemplate('food item', 'food', stableVersion, [
     {
       name: 'can_always_eat',
       message: 'Can always eat',
@@ -240,7 +287,7 @@ exports.newFoodItem = new Form(
 );
 
 exports.newFuelItem = new Form(
-  newItemTemplate('fuel item', 'fuel', [
+  newItemTemplate('fuel item', 'fuel', experimentalVersion, [
     {
       name: 'duration',
       message: 'Duration 🧪',
@@ -250,11 +297,11 @@ exports.newFuelItem = new Form(
 );
 
 exports.newThrowableItem = new Form(
-  newItemTemplate('throwable item', 'throwable', [
+  newItemTemplate('throwable item', 'throwable', experimentalVersion, [
     {
-      name: 'do_swing_animation 🧪',
-      message: 'Do swing animation',
-      enabled: false,
+      name: 'do_swing_animation',
+      message: 'Do swing animation 🧪',
+      enabled: true,
       format(input, choice) {
         return enquirerHelper.formatBoolean(input, choice, this);
       },
@@ -283,9 +330,9 @@ exports.newThrowableItem = new Form(
       initial: '0.0',
     },
     {
-      name: 'scale_power_by_draw_duration	 🧪',
-      message: 'Scale power by draw duration',
-      enabled: false,
+      name: 'scale_power_by_draw_duration',
+      message: 'Scale power by draw duration 🧪',
+      enabled: true,
       format(input, choice) {
         return enquirerHelper.formatBoolean(input, choice, this);
       },
@@ -293,11 +340,27 @@ exports.newThrowableItem = new Form(
         return choice.enabled;
       },
     },
+    {
+      name: 'hand_equipped',
+      message: 'Hand equipped',
+      enabled: true,
+      format(input, choice) {
+        return enquirerHelper.formatBoolean(input, choice, this);
+      },
+      result(value, choice) {
+        return choice.enabled;
+      },
+    },
+    {
+      name: 'use_duration',
+      message: 'Use duration',
+      initial: '3600',
+    },
   ])
 );
 
 exports.newWeaponItem = new Form(
-  newItemTemplate('weapon item', 'weapon', [
+  newItemTemplate('weapon item', 'weapon', stableVersion, [
     {
       name: 'on_hit_block',
       message: 'On hit block 🧪',

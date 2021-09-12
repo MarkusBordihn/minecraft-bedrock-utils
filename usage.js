@@ -29,11 +29,21 @@ Usage:
 
 ${command} add item\t\t${chalk.grey('add a new item (interactive)')}
 ${command} add item <name>\t\t${chalk.grey(
-    'add a new items with the given name'
+    'add a new item with the given name'
+  )}
+${command} add recipe\t\t${chalk.grey('add a new recipe (interactive)')}
+${command} add recipe <name>\t\t${chalk.grey(
+    'add a new recipe with the given name'
   )}
 ${command} list items\t\t${chalk.grey('list all items for the current project')}
 ${command} list items <path>\t${chalk.grey(
     'list all items for the specific project'
+  )}
+${command} list recipes\t\t${chalk.grey(
+    'list all recipes for the current project'
+  )}
+${command} list recipes <path>\t${chalk.grey(
+    'list all recipes for the specific project'
   )}
 ${command} debug\t\t\t${chalk.grey('shows debug information')}
 ${command} info <path>\t\t${chalk.grey('shows info about specific project')}
@@ -42,7 +52,9 @@ ${command} new <name>\t\t${chalk.grey(
     'creates a new project with default options'
   )}
 ${command} new\t\t\t${chalk.grey('creates a new project (interactive)')}
-${command} run\t\t\t${chalk.grey('copy behavior and resource files')}
+${command} run\t\t\t${chalk.grey(
+    'copy behavior and resource development files and start client'
+  )}
 ${command} uuid <name> <namespace>\t${chalk.grey(
     'returns a v5 UUID string for the given name and namespace'
   )}
@@ -50,6 +62,7 @@ ${command} uuid <name>\t\t${chalk.grey(
     'returns a v5 UUID string for the given name with a default namespace'
   )}
 ${command} uuid\t\t\t${chalk.grey('returns a v4 UUID string')}
+${command} deploy\t\t\t${chalk.grey('copy behavior and resource files')}
 ${command} version\t\t\t${chalk.grey('shows current version number')}
 \n`;
   console.log(usage);
@@ -58,11 +71,15 @@ ${command} version\t\t\t${chalk.grey('shows current version number')}
 const showAddUsage = () => {
   const usage = `Please specify the add option.
 
-Usage:
+Usage: add <type>
   
 ${command} add item\t\t${chalk.grey('add a new item (interactive)')}
 ${command} add item <name>\t\t${chalk.grey(
-    'add a new items with the given name'
+    'add a new item with the given name'
+  )}
+${command} add recipe\t\t${chalk.grey('add a new recipe (interactive)')}
+${command} add recipe <name>\t\t${chalk.grey(
+    'add a new recipe with the given name'
   )}
 \n`;
   console.log(usage);

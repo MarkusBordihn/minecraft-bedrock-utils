@@ -38,10 +38,10 @@ const defaultFormatVersion = '1.16.1';
 const createItem = (name, options = {}) => {
   const behaviorPackPath = defaultPath.possibleBehaviorPackInWorkingPath;
   const resourcePackPath = defaultPath.possibleResourcePackInWorkingPath;
-  const itemName = normalizeItemName(options.name || 'my_item');
-  const itemId = getItemId(options.name, options.namespace);
+  const itemName = normalizeName(options.name || 'my_item');
+  const itemId = getId(options.name, options.namespace);
 
-  // Creative Item Config in behavior pack
+  // Create Item Config in behavior pack
   files.createFolderIfNotExists(behaviorPackPath, 'items');
   options.context = 'behavior';
   createItemConfig(
@@ -49,7 +49,7 @@ const createItem = (name, options = {}) => {
     options
   );
 
-  // Creative Item Config in resource pack, if needed
+  // Create Item Config in resource pack, if needed
   if (compareVersions.compare(options.format_version, '1.16.100', '<')) {
     files.createFolderIfNotExists(resourcePackPath, 'items');
     options.context = 'resource';
@@ -128,8 +128,8 @@ const createItemConfig = (file, options = {}) => {
  */
 const getItemConfig = (options = {}) => {
   const name = options.name || 'my_item';
-  const itemName = normalizeItemName(name);
-  const itemId = getItemId(name, options.namespace);
+  const itemName = normalizeName(name);
+  const itemId = getId(name, options.namespace);
   const formatVersion = options.format_version || defaultFormatVersion;
   const legacyVersion = compareVersions.compare(formatVersion, '1.16.100', '<');
   const isResourceConfig = options.context == 'resource';
@@ -153,6 +153,7 @@ const getItemConfig = (options = {}) => {
     switch (options.type) {
       case 'digger':
       case 'weapon':
+      case 'throwable':
         result['minecraft:item'].description.category = 'equipment';
         break;
       case 'food':
@@ -205,9 +206,8 @@ const getItemConfig = (options = {}) => {
     );
   }
   if (options.foil) {
-    result['minecraft:item'].components['minecraft:foil'] = parseInt(
-      options.foil
-    );
+    result['minecraft:item'].components['minecraft:foil'] =
+      options.foil || false;
   }
   if (options.hand_equipped) {
     result['minecraft:item'].components['minecraft:hand_equipped'] = true;
@@ -255,7 +255,12 @@ const getItemConfig = (options = {}) => {
         max_draw_duration: parseFloat(options.max_draw_duration) || 0.0,
         max_launch_power: parseFloat(options.max_launch_power) || 1.0,
         min_draw_duration: parseFloat(options.min_draw_duration) || 0.0,
-        scale_power_by_draw_duration: false,
+        scale_power_by_draw_duration:
+          options.scale_power_by_draw_duration || false,
+      };
+      result['minecraft:item'].components['minecraft:projectile'] = {
+        projectile_entity: 'minecraft:arrow',
+        minimum_critical_power: 1,
       };
       break;
     case 'weapon':
@@ -279,6 +284,10 @@ const getItemConfig = (options = {}) => {
   return result;
 };
 
+/**
+ * @param {string} search_path
+ * @return {Object}
+ */
 const getItems = (search_path = defaultPath.workingPath) => {
   let behaviorPackPath = defaultPath.possibleBehaviorPackInWorkingPath;
   let resourcePackPath = defaultPath.possibleResourcePackInWorkingPath;
@@ -301,7 +310,7 @@ const getItems = (search_path = defaultPath.workingPath) => {
       if (itemData['minecraft:item']) {
         const identifier = itemData['minecraft:item'].description.identifier;
         items[identifier] = {
-          category: itemData['minecraft:item'].description.category || 'Misc',
+          category: itemData['minecraft:item'].description.category || 'misc',
           behavior: true,
           resource: false,
         };
@@ -329,7 +338,7 @@ const getItems = (search_path = defaultPath.workingPath) => {
           }
         } else {
           items[identifier] = {
-            category: itemData['minecraft:item'].description.category || 'Misc',
+            category: itemData['minecraft:item'].description.category || 'misc',
             behavior: false,
             resource: true,
           };
@@ -340,29 +349,34 @@ const getItems = (search_path = defaultPath.workingPath) => {
   return items;
 };
 
-const getItemId = (name, namespace = defaultNamespace) => {
-  return `${namespace}:${normalizeItemName(name)}`;
+/**
+ *
+ * @param {String} name
+ * @param {String} namespace
+ * @return {String}
+ */
+const getId = (name, namespace = defaultNamespace) => {
+  return `${namespace}:${normalizeName(name)}`;
 };
 
-const existingItem = (name, namespace = defaultNamespace) => {
-  const possibleItems = getItems();
-  const itemId = getItemId(name, namespace);
-  if (possibleItems[itemId]) {
-    console.error(chalk.red(`Item ${itemId} already exists ...`));
-    return true;
-  }
-  return false;
-};
-
-const normalizeItemName = (name = '') => {
+const normalizeName = (name = '') => {
   return name
     .replace(/\s+/g, '_')
     .replace(/[^a-zA-Z0-9_-]/g, '')
     .toLowerCase();
 };
 
+const existingItem = (name, namespace = defaultNamespace) => {
+  const possibleItems = getItems();
+  const itemId = getId(name, namespace);
+  if (possibleItems[itemId]) {
+    return true;
+  }
+  return false;
+};
+
 exports.createItem = createItem;
 exports.existingItem = existingItem;
-exports.getItemId = getItemId;
+exports.getId = getId;
 exports.getItems = getItems;
-exports.normalizeItemName = normalizeItemName;
+exports.normalizeName = normalizeName;

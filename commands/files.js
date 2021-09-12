@@ -23,6 +23,70 @@ const fs = require('fs-extra');
 const path = require('path');
 const defaultPath = require('../utils/path.js');
 
+const copyBehaviorFiles = () => {
+  if (
+    defaultPath.possibleBehaviorPackInWorkingPath &&
+    defaultPath.behaviorPacksPath
+  ) {
+    const srcDir = defaultPath.possibleBehaviorPackInWorkingPath;
+    const targetDir = path.join(
+      defaultPath.behaviorPacksPath,
+      path.basename(srcDir)
+    );
+    if (fs.existsSync(targetDir)) {
+      console.log('Cleaning existing directory before copy...');
+      fs.emptyDirSync(targetDir);
+    }
+    console.log(
+      chalk.green('Copy behavior pack from', srcDir, 'to', targetDir, '...')
+    );
+    fs.copySync(srcDir, targetDir);
+    return true;
+  } else {
+    console.warn(
+      chalk.yellow(
+        'Unable to find behavior pack in working / development path !'
+      )
+    );
+  }
+  return false;
+};
+
+const copyResourceFiles = () => {
+  if (
+    defaultPath.possibleResourcePackInWorkingPath &&
+    defaultPath.resourcePacksPath
+  ) {
+    const srcDir = defaultPath.possibleResourcePackInWorkingPath;
+    const targetDir = path.join(
+      defaultPath.resourcePacksPath,
+      path.basename(srcDir)
+    );
+    if (fs.existsSync(targetDir)) {
+      console.log('Cleaning existing directory before copy...');
+      fs.emptyDirSync(targetDir);
+    }
+    console.log(
+      chalk.green('Copy resource pack from', srcDir, 'to', targetDir, '...')
+    );
+    fs.copySync(srcDir, targetDir);
+    return true;
+  } else {
+    console.warn(
+      chalk.yellow(
+        'Unable to find resource pack in working / development path !'
+      )
+    );
+  }
+  return false;
+};
+
+const copyFiles = () => {
+  const resourcePackResult = copyResourceFiles();
+  const behaviorPackResult = copyBehaviorFiles();
+  return resourcePackResult || behaviorPackResult;
+};
+
 const copyBehaviorDevelopmentFiles = () => {
   if (
     defaultPath.possibleBehaviorPackInWorkingPath &&
@@ -87,6 +151,7 @@ const copyDevelopmentFiles = () => {
   return resourcePackResult || behaviorPackResult;
 };
 
+exports.copyFiles = copyFiles;
 exports.copyBehaviorDevelopmentFiles = copyBehaviorDevelopmentFiles;
 exports.copyDevelopmentFiles = copyDevelopmentFiles;
 exports.copyResourceDevelopmentFiles = copyResourceDevelopmentFiles;

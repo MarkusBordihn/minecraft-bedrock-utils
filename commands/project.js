@@ -25,7 +25,7 @@ const preChecks = require('../utils/preChecks.js');
 const { Form } = require('enquirer');
 
 const newProjectPrompt = new Form({
-  name: 'user',
+  name: 'project',
   message: 'Please provide the following information for the project:',
   choices: [
     {
@@ -105,7 +105,6 @@ const newProject = (name, options = {}) => {
     newProjectPrompt
       .run()
       .then((value) => {
-        console.log('Answer:', value);
         newProject(value.name, value);
       })
       .catch(console.error);

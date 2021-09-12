@@ -28,21 +28,32 @@ const info = require('./commands/info.js');
 const item = require('./commands/item.js');
 const launch = require('./commands/launch.js');
 const project = require('./commands/project.js');
+const recipe = require('./commands/recipe.js');
 const usage = require('./usage.js');
 const uuid = require('./commands/uuid.js');
 const { version } = require('./package.json');
 
 switch (args[0]) {
   case 'add':
-    if (args[1] == 'item') {
-      item.add(args[2]);
-    } else {
-      usage.showAddUsage();
+    switch (args[1]) {
+      case 'item':
+        item.add(args[2]);
+        break;
+      case 'recipe':
+        recipe.add(args[2]);
+        break;
+      default:
+        usage.showAddUsage();
     }
     break;
   case 'list':
-    if (args[1] == 'items') {
-      item.list(args[2]);
+    switch (args[1]) {
+      case 'items':
+        item.list(args[2]);
+        break;
+      case 'recipes':
+        recipe.list(args[2]);
+        break;
     }
     break;
   case 'debug':
@@ -62,6 +73,9 @@ switch (args[0]) {
     break;
   case 'copy':
     files.copyDevelopmentFiles();
+    break;
+  case 'deploy':
+    files.copyFiles();
     break;
   case 'new':
     project.newProject(args[1], args[2]);

@@ -88,6 +88,14 @@ Example: `npx minecraft-bedrock-utils add item`
 
 ![Example Screenshot](assets/new_item_example.jpg)
 
+### add recipe
+
+This commands adds a new recipe to the project with some default options.
+
+Example: `npx minecraft-bedrock-utils add recipe`
+
+![Example Screenshot](assets/new_recipe_example.jpg)
+
 ### run
 
 The run commands copies the behavior pack and/or resource pack of the current
@@ -114,6 +122,14 @@ Example: `npx minecraft-bedrock-utils copy`
 Tries to start Minecraft Bedrock, if it was not already started.
 
 Example: `npx minecraft-bedrock-utils launch`
+
+### deploy
+
+The deploy commands copies the behavior pack and/or resource pack of the current
+directory into the behavior pack and/or resource pack folders to run it on
+a multiplayer server.
+
+Example: `npx minecraft-bedrock-utils copy`
 
 ### uuid
 

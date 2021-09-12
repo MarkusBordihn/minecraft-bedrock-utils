@@ -19,6 +19,7 @@
  */
 
 const chalk = require('chalk');
+const compareVersions = require('compare-versions');
 const defaultPath = require('../utils/path.js');
 
 const errorExistingBehaviorPack = () => {
@@ -83,5 +84,16 @@ const errorNonExistingPack = () => {
   return false;
 };
 
+const warnExperimentalVersion = (version) => {
+  if (compareVersions.compare(version, '1.16.100', '>=')) {
+    console.warn(`\n⚠️ Note: The format version ${version} requires to enable the "Holiday Creator Features" under Experiments!
+See: https://feedback.minecraft.net/hc/en-us/articles/4403610710797\n`);
+    return true;
+  }
+  return false;
+};
+
 exports.errorExistingPack = errorExistingPack;
+exports.errorNonExistingBehaviorPack = errorNonExistingBehaviorPack;
 exports.errorNonExistingPack = errorNonExistingPack;
+exports.warnExperimentalVersion = warnExperimentalVersion;

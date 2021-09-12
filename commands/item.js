@@ -1,5 +1,5 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Add item command
+ * @fileoverview Minecraft Bedrock Utils - Item commands
  *
  * @license Copyright 2021 Markus Bordihn
  *
@@ -19,7 +19,6 @@
  */
 
 const chalk = require('chalk');
-const compareVersions = require('compare-versions');
 const items = require('../utils/items.js');
 const preChecks = require('../utils/preChecks.js');
 const prompts = require('./itemPrompts.js');
@@ -91,9 +90,7 @@ const add = (name, options = {}) => {
   // Only create new item if we don't found any existing item.
   if (items.existingItem(name, options.namespace)) {
     console.error(
-      chalk.red(
-        `Item ${items.getItemId(name, options.namespace)} already exists ...`
-      )
+      chalk.red(`Item ${items.getId(name, options.namespace)} already exists!`)
     );
     return;
   }
@@ -102,13 +99,14 @@ const add = (name, options = {}) => {
   }
 
   // Warn user if this required an experimental flag
-  if (compareVersions.compare(options.format_version, '1.16.100', '>=')) {
-    console.warn(`\n⚠️ Note: The format version ${options.format_version} requires to enable the "Holiday Creator Features" under Experiments!
-See: https://feedback.minecraft.net/hc/en-us/articles/4403610710797\n`);
-  }
+  preChecks.warnExperimentalVersion(options.format_version);
 
   items.createItem(name, options);
 };
+
+/**
+ * @param {String} search_path
+ */
 
 const list = (search_path) => {
   const possibleItems = items.getItems(search_path);
