@@ -78,6 +78,18 @@ const add = (name, options = {}) => {
     return;
   }
 
+  // Adding default options if missing
+  if (!options.name) {
+    options.name = name;
+  }
+  if (!options.namespace) {
+    options.namespace =
+      process.env.npm_package_config_project_namespace || 'my_item';
+  }
+  if (!options.format_version) {
+    options.format_version = '1.16.1';
+  }
+
   // Only create new recipe if we don't found any existing recipe.
   if (recipes.existingRecipe(name, options.namespace)) {
     console.error(
@@ -86,9 +98,6 @@ const add = (name, options = {}) => {
       )
     );
     return;
-  }
-  if (!options.name) {
-    options.name = name;
   }
 
   // Warn user if this required an experimental flag

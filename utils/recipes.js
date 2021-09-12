@@ -115,8 +115,8 @@ const getRecipeConfig = (options = {}) => {
       pattern: [],
       key: {},
       result: {
-        item: options.result_item,
-        count: parseInt(options.result_amount),
+        item: options.result_item || '',
+        count: options.result_amount ? parseInt(options.result_amount) : 1,
       },
     },
   };
@@ -133,13 +133,17 @@ const getRecipeConfig = (options = {}) => {
   }
 
   // Handle crafting grid pattern
-  const craftingGridValues = {};
-  // eslint-disable-next-line compat/compat
-  for (const [key, value] of Object.entries(options.values)) {
-    craftingGridValues[key] = value && value != ' ' ? value : '';
+  if (options.values) {
+    const craftingGridValues = {};
+    // eslint-disable-next-line compat/compat
+    for (const [key, value] of Object.entries(options.values)) {
+      craftingGridValues[key] = value && value != ' ' ? value : '';
+    }
+    result['minecraft:recipe_shaped'].pattern =
+      getOptimizedCraftingGridPattern(craftingGridValues);
+  } else {
+    result['minecraft:recipe_shaped'].pattern = [];
   }
-  result['minecraft:recipe_shaped'].pattern =
-    getOptimizedCraftingGridPattern(craftingGridValues);
 
   return result;
 };

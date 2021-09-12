@@ -87,15 +87,25 @@ const add = (name, options = {}) => {
       .catch(console.error);
     return;
   }
+
+  // Adding default options if missing
+  if (!options.name) {
+    options.name = name;
+  }
+  if (!options.namespace) {
+    options.namespace =
+      process.env.npm_package_config_project_namespace || 'my_item';
+  }
+  if (!options.format_version) {
+    options.format_version = '1.16.1';
+  }
+
   // Only create new item if we don't found any existing item.
   if (items.existingItem(name, options.namespace)) {
     console.error(
       chalk.red(`Item ${items.getId(name, options.namespace)} already exists!`)
     );
     return;
-  }
-  if (!options.name) {
-    options.name = name;
   }
 
   // Warn user if this required an experimental flag
