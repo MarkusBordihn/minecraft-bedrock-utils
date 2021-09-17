@@ -143,6 +143,17 @@ const newItemTemplate = (
   if (choices.length > 0) {
     result.choices = result.choices.concat(choices);
   }
+  result.choices = result.choices.concat({
+    name: 'save_config',
+    message: 'Save item config 💾',
+    enabled: false,
+    format(input, choice) {
+      return enquirerHelper.formatBoolean(input, choice, this);
+    },
+    result(value, choice) {
+      return choice.enabled;
+    },
+  });
   return result;
 };
 
@@ -541,4 +552,4 @@ exports.newWeaponItem = new Form(
   ])
 );
 
-exports.newCustomItem = new Form(newItemTemplate('custom item', 'custom'));
+exports.newCustomItem = new Form(newItemTemplate('custom', stableVersion));

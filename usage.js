@@ -27,6 +27,9 @@ ${command} add item\t\t${chalk.grey('add a new item (interactive)')}
 ${command} add item <name>\t\t${chalk.grey(
   'add a new item with the given name'
 )}
+${command} add item <config file>\t\t${chalk.grey(
+  'add a new item based on the given config file'
+)}
 ${command} add recipe\t\t${chalk.grey('add a new recipe (interactive)')}
 ${command} add recipe <name>\t${chalk.grey(
   'add a new recipe with the given name'

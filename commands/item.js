@@ -19,6 +19,7 @@
  */
 
 const chalk = require('chalk');
+const configuration = require('../utils/configuration.js');
 const items = require('../utils/items.js');
 const preChecks = require('../utils/preChecks.js');
 const prompts = require('./itemPrompts.js');
@@ -34,6 +35,12 @@ const add = (name, options = {}) => {
       '\nTip: Use "npx minecraft-bedrock-utils new" to create a new project.\n'
     );
     return;
+  }
+
+  // Load options from config file for automated creation and tests.
+  if (name.endsWith('.mbu')) {
+    options = configuration.loadConfig(name);
+    name = options.name;
   }
 
   // If no name was provided start interactive questions.

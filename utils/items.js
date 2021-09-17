@@ -21,6 +21,7 @@
 const attachable = require('./attachables.js');
 const chalk = require('chalk');
 const compareVersions = require('compare-versions');
+const configuration = require('./configuration.js');
 const defaultPath = require('../utils/path.js');
 const files = require('./files.js');
 const fs = require('fs');
@@ -96,6 +97,16 @@ const createItem = (name, options = {}) => {
     `item.${itemId}.name`,
     name
   );
+
+  // Store item configuration, if needed
+  if (options.save_config) {
+    const configurationPath = path.join('.minecraft-bedrock-utils');
+    files.createFolderIfNotExists(configurationPath);
+    configuration.saveConfig(
+      path.join(configurationPath, `item_${itemId.replace(':', '__')}.mbu`),
+      options
+    );
+  }
 };
 
 /**
