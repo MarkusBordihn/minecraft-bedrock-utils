@@ -23,6 +23,9 @@ const fs = require('fs');
 const defaultPath = require('../utils/path.js');
 const manifest = require('../utils/manifest.js');
 
+/**
+ * @param {String} search_path
+ */
 const showInfo = (search_path = defaultPath.workingPath) => {
   let behaviorPackPath = defaultPath.possibleBehaviorPackInWorkingPath;
   let resourcePackPath = defaultPath.possibleResourcePackInWorkingPath;

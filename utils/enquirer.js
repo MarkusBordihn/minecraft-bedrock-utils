@@ -20,6 +20,12 @@
 
 const spaceBarHint = ' (toggle with space)';
 
+/**
+ * @param {String} input
+ * @param {*} choice
+ * @param {*} scope
+ * @return {String}
+ */
 const formatBoolean = (input, choice, scope) => {
   choice.input = '';
   choice.cursor = 0;
@@ -36,6 +42,12 @@ const formatBoolean = (input, choice, scope) => {
   return check();
 };
 
+/**
+ * @param {String} input
+ * @param {*} choice
+ * @param {*} scope
+ * @return {String}
+ */
 const formatOptional = (input, choice, scope) => {
   choice.input = '';
   choice.cursor = 0;

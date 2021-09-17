@@ -54,6 +54,8 @@ switch (args[0]) {
       case 'recipes':
         recipe.list(args[2]);
         break;
+      default:
+        usage.showListUsage();
     }
     break;
   case 'debug':

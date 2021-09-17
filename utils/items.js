@@ -18,6 +18,7 @@
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
+const attachable = require('./attachables.js');
 const chalk = require('chalk');
 const compareVersions = require('compare-versions');
 const defaultPath = require('../utils/path.js');
@@ -38,10 +39,15 @@ const defaultFormatVersion = '1.16.1';
 const createItem = (name, options = {}) => {
   const behaviorPackPath = defaultPath.possibleBehaviorPackInWorkingPath;
   const resourcePackPath = defaultPath.possibleResourcePackInWorkingPath;
-  const itemName = normalizeName(options.name || 'my_item');
-  const itemId = getId(options.name, options.namespace);
+  const itemName = normalizeName(name || 'my_item');
+  const itemId = getId(name, options.namespace);
 
-  // Create Item Config in behavior pack
+  // Make sure config includes name
+  if (!options.name) {
+    options.name = name;
+  }
+
+  // Create item config in behavior pack
   files.createFolderIfNotExists(behaviorPackPath, 'items');
   options.context = 'behavior';
   createItemConfig(
@@ -49,7 +55,7 @@ const createItem = (name, options = {}) => {
     options
   );
 
-  // Create Item Config in resource pack, if needed
+  // Create item config in resource pack, if needed
   if (compareVersions.compare(options.format_version, '1.16.100', '<')) {
     files.createFolderIfNotExists(resourcePackPath, 'items');
     options.context = 'resource';
@@ -59,18 +65,27 @@ const createItem = (name, options = {}) => {
     );
   }
 
-  // Create Texture Entry
+  // Create texture entry
+  let textureExampleAssets = options.type || 'custom';
+  if (options.armor_type) {
+    textureExampleAssets = `${textureExampleAssets}_${options.armor_type}`;
+  }
   const texturePath = path.join(resourcePackPath, 'textures');
   files.createFolderIfNotExists(texturePath);
   files.createFolderIfNotExists(texturePath, 'items');
   files.copyFileIfNotExists(
-    path.join(defaultPath.assetsItemsPath, `${options.type || 'other'}.png`),
+    path.join(defaultPath.assetsItemsPath, `${textureExampleAssets}.png`),
     path.join(texturePath, 'items', `${itemName}.png`)
   );
   createItemTextureConfig(
     path.join(texturePath, 'item_texture.json'),
     itemName
   );
+
+  // Create attachable entry, if needed
+  if (options.type == 'armor') {
+    attachable.createAttachable(name, options);
+  }
 
   // Create texts and language entry
   const textsPath = path.join(resourcePackPath, 'texts');
@@ -79,7 +94,7 @@ const createItem = (name, options = {}) => {
   language.addLanguageText(
     path.join(textsPath, 'en_US.lang'),
     `item.${itemId}.name`,
-    options.name
+    name
   );
 };
 
@@ -150,19 +165,9 @@ const getItemConfig = (options = {}) => {
     (!legacyVersion && isBehaviorConfig)
   ) {
     // Handles item descriptions based on format version
-    switch (options.type) {
-      case 'digger':
-      case 'weapon':
-      case 'throwable':
-        result['minecraft:item'].description.category = 'equipment';
-        break;
-      case 'food':
-        result['minecraft:item'].description.category = 'nature';
-        break;
-      case 'fuel':
-      default:
-        result['minecraft:item'].description.category = 'items';
-    }
+    result['minecraft:item'].description.category = getDescriptionCategory(
+      options.type
+    );
 
     // Handles icon and name specific options
     result['minecraft:item'].components['minecraft:icon'] = isResourceConfig
@@ -195,31 +200,13 @@ const getItemConfig = (options = {}) => {
   }
 
   // Handle behavior specific options
-  if (options.use_duration) {
-    result['minecraft:item'].components['minecraft:use_duration'] = parseInt(
-      options.use_duration
-    );
-  }
-  if (options.damage) {
-    result['minecraft:item'].components['minecraft:damage'] = parseInt(
-      options.damage
-    );
-  }
-  if (options.foil) {
-    result['minecraft:item'].components['minecraft:foil'] =
-      options.foil || false;
-  }
-  if (options.hand_equipped) {
-    result['minecraft:item'].components['minecraft:hand_equipped'] = true;
-  }
-  if (options.max_stack_size) {
-    result['minecraft:item'].components['minecraft:max_stack_size'] = parseInt(
-      options.max_stack_size
-    );
-  }
+  handleGeneralOptions(result, options);
 
   // Type specific options
   switch (options.type) {
+    case 'armor':
+      handleArmorType(result, options);
+      break;
     case 'digger':
       result['minecraft:item'].components['minecraft:digger'] = {
         use_efficiency: options.use_efficiency || false,
@@ -233,15 +220,7 @@ const getItemConfig = (options = {}) => {
       }
       break;
     case 'food':
-      result['minecraft:item'].components['minecraft:food'] = {
-        can_always_eat: options.can_always_eat || false,
-        nutrition: parseInt(options.nutrition),
-        saturation_modifier: options.saturation_modifier || 'normal',
-        using_converts_to: options.using_converts_to || '',
-      };
-      if (options.effects) {
-        result['minecraft:item'].components['minecraft:food'].effects = [];
-      }
+      handleFoodType(result, options);
       break;
     case 'fuel':
       result['minecraft:item'].components['minecraft:fuel'] = {
@@ -282,6 +261,151 @@ const getItemConfig = (options = {}) => {
   }
 
   return result;
+};
+
+/**
+ * @param {String} type
+ * @return {String}
+ */
+const getDescriptionCategory = (type) => {
+  switch (type) {
+    case 'armor':
+    case 'digger':
+    case 'throwable':
+    case 'weapon':
+    case 'wearable':
+      return 'equipment';
+    case 'food':
+      return 'nature';
+    case 'custom':
+    case 'fuel':
+    default:
+      return 'items';
+  }
+};
+
+/**
+ * @param {Object} result
+ * @param {Object} options
+ */
+const handleGeneralOptions = (result, options) => {
+  if (options.use_duration) {
+    result['minecraft:item'].components['minecraft:use_duration'] = parseInt(
+      options.use_duration
+    );
+  }
+  if (options.damage) {
+    result['minecraft:item'].components['minecraft:damage'] = parseInt(
+      options.damage
+    );
+  }
+  if (options.foil) {
+    result['minecraft:item'].components['minecraft:foil'] =
+      options.foil || false;
+  }
+  if (options.hand_equipped) {
+    result['minecraft:item'].components['minecraft:hand_equipped'] = true;
+  }
+  if (options.max_stack_size) {
+    result['minecraft:item'].components['minecraft:max_stack_size'] = parseInt(
+      options.max_stack_size
+    );
+  }
+  if (options.render_offset) {
+    result['minecraft:item'].components['minecraft:render_offsets'] =
+      options.render_offset;
+  }
+  if (options.wearable_slot) {
+    result['minecraft:item'].components['minecraft:wearable'] = {
+      slot: options.wearable_slot,
+    };
+  }
+};
+
+/**
+ * @param {Object} result
+ * @param {Object} options
+ */
+const handleArmorType = (result, options) => {
+  result['minecraft:item'].components['minecraft:armor'] = {
+    protection: parseInt(options.protection),
+  };
+  if (options.texture_type) {
+    result['minecraft:item'].components['minecraft:armor'].texture_type =
+      options.texture_type;
+  }
+
+  switch (options.armor_type) {
+    case 'boots':
+      result['minecraft:item'].components['minecraft:creative_category'] = {
+        parent: 'itemGroup.name.boots',
+      };
+      result['minecraft:item'].components['minecraft:enchantable'] = {
+        value: 14,
+        slot: 'armor_feet',
+      };
+      result['minecraft:item'].components['minecraft:render_offsets'] = 'boots';
+      result['minecraft:item'].components['minecraft:wearable'] = {
+        slot: 'slot.armor.feet',
+      };
+      break;
+    case 'chestplate':
+      result['minecraft:item'].components['minecraft:creative_category'] = {
+        parent: 'itemGroup.name.chestplate',
+      };
+      result['minecraft:item'].components['minecraft:enchantable'] = {
+        value: 14,
+        slot: 'armor_torso',
+      };
+      result['minecraft:item'].components['minecraft:render_offsets'] =
+        'chestplates';
+      result['minecraft:item'].components['minecraft:wearable'] = {
+        slot: 'slot.armor.chest',
+      };
+      break;
+    case 'helmet':
+      result['minecraft:item'].components['minecraft:creative_category'] = {
+        parent: 'itemGroup.name.helmet',
+      };
+      result['minecraft:item'].components['minecraft:enchantable'] = {
+        value: 14,
+        slot: 'armor_head',
+      };
+      result['minecraft:item'].components['minecraft:wearable'] = {
+        slot: 'slot.armor.head',
+      };
+      break;
+    case 'leggings':
+      result['minecraft:item'].components['minecraft:creative_category'] = {
+        parent: 'itemGroup.name.leggings',
+      };
+      result['minecraft:item'].components['minecraft:enchantable'] = {
+        value: 14,
+        slot: 'armor_legs',
+      };
+      result['minecraft:item'].components['minecraft:render_offsets'] =
+        'leggings';
+      result['minecraft:item'].components['minecraft:wearable'] = {
+        slot: 'slot.armor.legs',
+      };
+      break;
+  }
+};
+
+/**
+ * @param {Object} result
+ * @param {Object} options
+ */
+const handleFoodType = (result, options) => {
+  result['minecraft:item'].components['minecraft:food'] = {
+    can_always_eat: options.can_always_eat || false,
+    nutrition: parseInt(options.nutrition),
+    saturation_modifier: options.saturation_modifier || 'normal',
+    using_converts_to: options.using_converts_to || '',
+  };
+  if (options.effects) {
+    result['minecraft:item'].components['minecraft:food'].effects = [];
+  }
 };
 
 /**
@@ -350,7 +474,6 @@ const getItems = (search_path = defaultPath.workingPath) => {
 };
 
 /**
- *
  * @param {String} name
  * @param {String} namespace
  * @return {String}
@@ -359,6 +482,10 @@ const getId = (name, namespace = defaultNamespace) => {
   return `${namespace}:${normalizeName(name)}`;
 };
 
+/**
+ * @param {String} name
+ * @return {String}
+ */
 const normalizeName = (name = '') => {
   return name
     .replace(/\s+/g, '_')
@@ -366,6 +493,11 @@ const normalizeName = (name = '') => {
     .toLowerCase();
 };
 
+/**
+ * @param {String} name
+ * @param {String} namespace
+ * @return {Boolean}
+ */
 const existingItem = (name, namespace = defaultNamespace) => {
   const possibleItems = getItems();
   const itemId = getId(name, namespace);

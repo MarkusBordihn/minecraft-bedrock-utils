@@ -23,6 +23,10 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
+/**
+ * @param {String} file
+ * @return {String}
+ */
 const readManifest = (file) => {
   if (!fs.existsSync(file)) {
     console.error(chalk.red('Unable to find manifest file at', file));
@@ -35,11 +39,16 @@ const readManifest = (file) => {
   return JSON.parse(manifestFile);
 };
 
+/**
+ * @param {String} file
+ * @param {Object} options
+ * @return {Object}
+ */
 const createManifest = (file, options = {}) => {
   if (fs.existsSync(file)) {
     if (!options.overwrite) {
       console.error(chalk.red('Manifest file already exists under', file));
-      return;
+      return {};
     } else {
       console.warn(chalk.orange('Overwriting existing manifest file', file));
     }

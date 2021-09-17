@@ -38,13 +38,25 @@ const add = (name, options = {}) => {
 
   // If no name was provided start interactive questions.
   if (!name) {
-    prompts.newItem
+    prompts.newItemType
       .run()
       .then((type) => {
         console.log(
           '🏷️  = placeholder\t🧪 = experimental (format version >= 1.16.100)'
         );
         switch (type) {
+          case 'armor':
+            prompts.newArmorType
+              .run()
+              .then((armorType) => {
+                prompts
+                  .newArmorItem(armorType)
+                  .run()
+                  .then((answers) => add(answers.name, answers))
+                  .catch(console.error);
+              })
+              .catch(console.error);
+            break;
           case 'digger':
             prompts.newDiggerItem
               .run()
@@ -75,7 +87,7 @@ const add = (name, options = {}) => {
               .then((answers) => add(answers.name, answers))
               .catch(console.error);
             break;
-          case 'other':
+          case 'custom':
           default:
             prompts.newCustomItem
               .run()
@@ -88,10 +100,7 @@ const add = (name, options = {}) => {
     return;
   }
 
-  // Adding default options if missing
-  if (!options.name) {
-    options.name = name;
-  }
+  // Adding default options, if missing
   if (!options.namespace) {
     options.namespace =
       process.env.npm_package_config_project_namespace || 'my_item';
@@ -117,7 +126,6 @@ const add = (name, options = {}) => {
 /**
  * @param {String} search_path
  */
-
 const list = (search_path) => {
   const possibleItems = items.getItems(search_path);
   if (Object.keys(possibleItems).length > 0) {

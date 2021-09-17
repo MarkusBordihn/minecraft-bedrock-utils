@@ -22,29 +22,37 @@ const chalk = require('chalk');
 
 const command = chalk.green('minecraft-bedrock-utils');
 
-const showUsage = () => {
+const addCommands = `
+${command} add item\t\t${chalk.grey('add a new item (interactive)')}
+${command} add item <name>\t\t${chalk.grey(
+  'add a new item with the given name'
+)}
+${command} add recipe\t\t${chalk.grey('add a new recipe (interactive)')}
+${command} add recipe <name>\t${chalk.grey(
+  'add a new recipe with the given name'
+)}
+`.substr(1);
+
+const listCommands = `
+${command} list items\t\t${chalk.grey('list all items for the current project')}
+${command} list items <path>\t${chalk.grey(
+  'list all items for the specific project'
+)}
+${command} list recipes\t\t${chalk.grey(
+  'list all recipes for the current project'
+)}
+${command} list recipes <path>\t${chalk.grey(
+  'list all recipes for the specific project'
+)}
+`.substr(1);
+
+exports.showUsage = () => {
   const usage = `${command} <command>
 
 Usage:
 
-${command} add item\t\t${chalk.grey('add a new item (interactive)')}
-${command} add item <name>\t\t${chalk.grey(
-    'add a new item with the given name'
-  )}
-${command} add recipe\t\t${chalk.grey('add a new recipe (interactive)')}
-${command} add recipe <name>\t\t${chalk.grey(
-    'add a new recipe with the given name'
-  )}
-${command} list items\t\t${chalk.grey('list all items for the current project')}
-${command} list items <path>\t${chalk.grey(
-    'list all items for the specific project'
-  )}
-${command} list recipes\t\t${chalk.grey(
-    'list all recipes for the current project'
-  )}
-${command} list recipes <path>\t${chalk.grey(
-    'list all recipes for the specific project'
-  )}
+${addCommands}
+${listCommands}
 ${command} debug\t\t\t${chalk.grey('shows debug information')}
 ${command} info <path>\t\t${chalk.grey('shows info about specific project')}
 ${command} info\t\t\t${chalk.grey('shows info about current project')}
@@ -68,23 +76,20 @@ ${command} version\t\t\t${chalk.grey('shows current version number')}
   console.log(usage);
 };
 
-const showAddUsage = () => {
+exports.showAddUsage = () => {
   const usage = `Please specify the add option.
 
 Usage: add <type>
   
-${command} add item\t\t${chalk.grey('add a new item (interactive)')}
-${command} add item <name>\t\t${chalk.grey(
-    'add a new item with the given name'
-  )}
-${command} add recipe\t\t${chalk.grey('add a new recipe (interactive)')}
-${command} add recipe <name>\t\t${chalk.grey(
-    'add a new recipe with the given name'
-  )}
-\n`;
+${addCommands}`;
   console.log(usage);
 };
 
-exports.command = command;
-exports.showUsage = showUsage;
-exports.showAddUsage = showAddUsage;
+exports.showListUsage = () => {
+  const usage = `Please specify the list option.
+
+Usage: list <type>
+  
+${listCommands}`;
+  console.log(usage);
+};

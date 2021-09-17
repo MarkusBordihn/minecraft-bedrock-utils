@@ -22,6 +22,9 @@ const chalk = require('chalk');
 const compareVersions = require('compare-versions');
 const defaultPath = require('../utils/path.js');
 
+/**
+ * @return {boolean}
+ */
 const errorExistingBehaviorPack = () => {
   const behaviorPackPath = defaultPath.getPossibleBehaviorPackInSearchPath();
   if (behaviorPackPath) {
@@ -33,6 +36,9 @@ const errorExistingBehaviorPack = () => {
   return false;
 };
 
+/**
+ * @return {boolean}
+ */
 const errorExistingResourcePack = () => {
   const resourcePackPath =
     defaultPath.getPossibleResourcePackPackInSearchPath();
@@ -45,6 +51,9 @@ const errorExistingResourcePack = () => {
   return false;
 };
 
+/**
+ * @return {boolean}
+ */
 const errorExistingPack = () => {
   const hasExistingBehaviorPack = errorExistingBehaviorPack();
   const hasExistingResourcePack = errorExistingResourcePack();
@@ -55,6 +64,9 @@ const errorExistingPack = () => {
   return false;
 };
 
+/**
+ * @return {boolean}
+ */
 const errorNonExistingBehaviorPack = () => {
   const behaviorPackPath = defaultPath.getPossibleBehaviorPackInSearchPath();
   if (!behaviorPackPath) {
@@ -64,6 +76,9 @@ const errorNonExistingBehaviorPack = () => {
   return false;
 };
 
+/**
+ * @return {boolean}
+ */
 const errorNonExistingResourcePack = () => {
   const resourcePackPath =
     defaultPath.getPossibleResourcePackPackInSearchPath();
@@ -74,6 +89,9 @@ const errorNonExistingResourcePack = () => {
   return false;
 };
 
+/**
+ * @return {boolean}
+ */
 const errorNonExistingPack = () => {
   const hasExistingBehaviorPack = errorNonExistingBehaviorPack();
   const hasExistingResourcePack = errorNonExistingResourcePack();
@@ -84,6 +102,10 @@ const errorNonExistingPack = () => {
   return false;
 };
 
+/**
+ * @param {String} version
+ * @return {boolean}
+ */
 const warnExperimentalVersion = (version) => {
   if (compareVersions.compare(version, '1.16.100', '>=')) {
     console.warn(`\n⚠️ Note: The format version ${version} requires to enable the "Holiday Creator Features" under Experiments!

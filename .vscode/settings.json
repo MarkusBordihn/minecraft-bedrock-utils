@@ -2,10 +2,13 @@
     "editor.tabSize": 2,
     "editor.rulers": [80],
     "cSpell.words": [
+        "attachables",
         "bbwe",
         "Bordihn",
         "chestplate",
+        "chestplates",
         "compat",
+        "enchantable",
         "fileoverview",
         "LOCALAPPDATA",
         "Markus",

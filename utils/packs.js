@@ -122,6 +122,14 @@ const newResourcePack = (name, options = {}) => {
 }`
     );
     files.createFolderIfNotExists(path.join(packPathName, 'textures'), 'items');
+    files.createFolderIfNotExists(
+      path.join(packPathName, 'textures'),
+      'models'
+    );
+    files.createFolderIfNotExists(
+      path.join(packPathName, 'textures', 'models'),
+      'armor'
+    );
     files.copyFileIfNotExists(
       path.join(defaultPath.assetsPath, 'resource_pack.png'),
       path.join(packPathName, 'pack_icon.png')

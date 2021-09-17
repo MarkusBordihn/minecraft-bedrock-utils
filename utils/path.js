@@ -26,6 +26,10 @@ const getWorkingPath = () => {
   return process.cwd();
 };
 
+/**
+ * @param {String} search_path
+ * @return {Array}
+ */
 const getPossibleManifestInSearchPath = (search_path = exports.workingPath) => {
   const searchPath = path.resolve(search_path);
   const result = [];
@@ -50,6 +54,10 @@ const getPossibleManifestInWorkingPath = () => {
   return getPossibleManifestInSearchPath(exports.workingPath);
 };
 
+/**
+ * @param {String} search_path
+ * @return {String}
+ */
 const getPossibleBehaviorPackInSearchPath = (search_path) => {
   const manifests = getPossibleManifestInSearchPath(search_path);
   for (const file of manifests || []) {
@@ -69,6 +77,10 @@ const getPossibleBehaviorPackInWorkingPath = () => {
   return getPossibleBehaviorPackInSearchPath(exports.workingPath);
 };
 
+/**
+ * @param {String} search_path
+ * @return {String}
+ */
 const getPossibleResourcePackPackInSearchPath = (
   search_path = exports.workingPath
 ) => {
@@ -174,6 +186,10 @@ const getResourcePacksPath = () => {
   }
 };
 
+/**
+ * @param {String} name
+ * @return {String}
+ */
 const normalizePathName = (name = '') => {
   return name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
 };
@@ -182,6 +198,9 @@ const normalizePathName = (name = '') => {
 exports.modulePath = path.resolve(__dirname, '..');
 exports.assetsPath = path.join(exports.modulePath, 'assets');
 exports.assetsItemsPath = path.join(exports.modulePath, 'assets', 'items');
+exports.assetsMiscPath = path.join(exports.modulePath, 'assets', 'misc');
+exports.assetsModelsPath = path.join(exports.modulePath, 'assets', 'models');
+exports.assetsModelsArmorPath = path.join(exports.assetsModelsPath, 'armor');
 exports.workingPath = getWorkingPath();
 exports.possibleManifestInWorkingPath = getPossibleManifestInWorkingPath();
 exports.possibleBehaviorPackInWorkingPath =

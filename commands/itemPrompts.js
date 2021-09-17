@@ -28,40 +28,64 @@ const { Form, Select } = require('enquirer');
 const stableVersion = '1.16.1';
 const experimentalVersion = '1.16.100';
 
+/**
+ * @param {String} type
+ * @return {String}
+ */
 const getItemTypeIcon = (type) => {
   switch (type) {
     case 'armor':
       return '🛡️';
+    case 'boots':
+      return '🥾';
     case 'blockPlacer':
       return '🔲';
+    case 'chestplate':
+      return '👕';
     case 'digger':
       return '⛏️';
+    case 'dyePowder':
+      return '✨';
+    case 'entityPlacer':
+      return '🕷️';
     case 'food':
       return '🍎';
     case 'fuel':
       return '🛢️';
+    case 'projectile':
+      return '🏹';
     case 'throwable':
       return '❄️';
+    case 'helmet':
+      return '⛑';
     case 'weapon':
       return '⚔️';
+    case 'leggings':
+    case 'wearable':
+      return '👖';
+    case 'custom':
     default:
-      return '';
+      return '✏️';
   }
 };
 
+/**
+ * @param {String} type
+ * @return {String}
+ */
 const getItemTypeIconForSelection = (type) => {
   return `  ${getItemTypeIcon(type)}\t`;
 };
 
 const newItemTemplate = (
-  name,
-  type = 'other',
+  type = 'custom',
   version = stableVersion,
-  choices = []
+  choices = [],
+  variation = ''
 ) => {
   const result = {
     name: type,
-    message: `Please provide the following information for the ${name} ${getItemTypeIcon(
+    message: `Please provide the following information for the ${type} item ${getItemTypeIcon(
       type
     )}`,
     choices: [
@@ -74,7 +98,7 @@ const newItemTemplate = (
       {
         name: 'name',
         message: 'Item Name',
-        initial: `New ${name}`,
+        initial: `New ${type} ${variation ? variation + ' ' : ''}item`,
         validate(value) {
           if (
             value &&
@@ -122,17 +146,21 @@ const newItemTemplate = (
   return result;
 };
 
-exports.newItem = new Select({
+exports.newItemType = new Select({
   name: 'itemType',
-  message: 'Please select the item type you want to create',
+  message: 'Select the item type you want to create',
   choices: [
-    { name: 'other', message: '  ✏️\t  Custom item (e.g. custom items)' },
+    {
+      name: 'custom',
+      message: `${getItemTypeIconForSelection(
+        'custom'
+      )}  Custom item (e.g. custom items)`,
+    },
     {
       name: 'armor',
       message: `${getItemTypeIconForSelection(
         'armor'
       )}  Armor item (e.g. helmet, chestplate, ...)`,
-      disabled: true,
     },
     {
       name: 'blockPlacer',
@@ -149,12 +177,16 @@ exports.newItem = new Select({
     },
     {
       name: 'dyePowder',
-      message: '  ✨\tDye powder item (e.g. red, green, blue, ...)',
+      message: `${getItemTypeIconForSelection(
+        'dyePowder'
+      )}Dye powder item (e.g. red, green, blue, ...)`,
       disabled: true,
     },
     {
       name: 'entityPlacer',
-      message: '  🕷️\t  Planter item for entities (e.g. spider on web)',
+      message: `${getItemTypeIconForSelection(
+        'entityPlacer'
+      )}  Planter item for entities (e.g. spider on web)`,
       disabled: true,
     },
     {
@@ -167,27 +199,136 @@ exports.newItem = new Select({
     },
     {
       name: 'projectile',
-      message: '  🏹\t Projectile item (e.g. arrow)',
+      message: `${getItemTypeIconForSelection(
+        'projectile'
+      )} Projectile item (e.g. arrow)`,
       disabled: true,
     },
     {
       name: 'throwable',
-      message: '  ❄️\t  Throwable item (e.g. snowball)',
+      message: `${getItemTypeIconForSelection(
+        'throwable'
+      )}  Throwable item (e.g. snowball)`,
     },
     {
       name: 'weapon',
-      message: '  ⚔️\t  Weapon item (e.g. axe, sword, ...)',
+      message: `${getItemTypeIconForSelection(
+        'weapon'
+      )}  Weapon item (e.g. axe, sword, ...)`,
     },
     {
       name: 'wearable',
-      message: '  👖\t Wearable item (e.g. cloth)',
+      message: `${getItemTypeIconForSelection(
+        'wearable'
+      )} Wearable item (e.g. cloth)`,
       disabled: true,
     },
   ],
 });
 
+exports.newArmorType = new Select({
+  name: 'armorType',
+  message: 'Select the armor type you want to create',
+  choices: [
+    {
+      name: 'custom',
+      message: `${getItemTypeIconForSelection('custom')}   Custom armor`,
+    },
+    {
+      name: 'boots',
+      message: `${getItemTypeIconForSelection('boots')} Boots`,
+    },
+    {
+      name: 'chestplate',
+      message: `${getItemTypeIconForSelection('chestplate')}  Chestplate`,
+    },
+    {
+      name: 'helmet',
+      message: `${getItemTypeIconForSelection('helmet')}  Helmet`,
+    },
+    {
+      name: 'leggings',
+      message: `${getItemTypeIconForSelection('leggings')}  Leggings`,
+    },
+  ],
+});
+
+exports.newArmorItem = (armor_type) => {
+  const armorItemSelection = [
+    {
+      name: 'armor_type',
+      message: 'Armor Type',
+      initial: armor_type,
+      hidden: true,
+    },
+    {
+      name: 'protection',
+      message: 'Protection 🧪',
+      initial: '5',
+    },
+    {
+      name: 'texture_type',
+      message: 'Texture type (e.g. diamond, gold, ...) 🧪',
+      initial: '',
+    },
+    {
+      name: 'max_stack_size',
+      message: 'Max stack size',
+      initial: '1',
+    },
+  ];
+  switch (armor_type) {
+    case 'boots':
+    case 'chestplate':
+    case 'helmet':
+      armorItemSelection.push({
+        name: 'textures_default',
+        message: 'Texture (default)',
+        initial: 'textures/models/armor/armor_1',
+      });
+      break;
+    case 'leggings':
+      armorItemSelection.push({
+        name: 'textures_default',
+        message: 'Texture (default)',
+        initial: 'textures/models/armor/armor_2',
+      });
+      break;
+    case 'custom':
+      armorItemSelection.push({
+        name: 'render_offset',
+        message: 'Render offset',
+        initial: 'chestplates',
+      });
+      armorItemSelection.push({
+        name: 'wearable_slot',
+        message: 'Wearable slot',
+        initial: 'slot.armor.chest',
+      });
+      armorItemSelection.push({
+        name: 'textures_default',
+        message: 'Texture (default)',
+        initial: 'textures/models/armor/armor_custom',
+      });
+      break;
+  }
+  armorItemSelection.push({
+    name: 'textures_enchanted',
+    message: 'Texture (enchanted)',
+    initial: 'textures/misc/enchanted_armor',
+  });
+  return new Form(
+    newItemTemplate(
+      `armor`,
+      experimentalVersion,
+      armorItemSelection,
+      armor_type
+    )
+  );
+};
+
 exports.newDiggerItem = new Form(
-  newItemTemplate('digger item', 'digger', experimentalVersion, [
+  newItemTemplate('digger', experimentalVersion, [
     {
       name: 'use_efficiency',
       message: 'Use Efficiency 🧪',
@@ -235,7 +376,7 @@ exports.newDiggerItem = new Form(
 );
 
 exports.newFoodItem = new Form(
-  newItemTemplate('food item', 'food', stableVersion, [
+  newItemTemplate('food', stableVersion, [
     {
       name: 'can_always_eat',
       message: 'Can always eat',
@@ -287,7 +428,7 @@ exports.newFoodItem = new Form(
 );
 
 exports.newFuelItem = new Form(
-  newItemTemplate('fuel item', 'fuel', experimentalVersion, [
+  newItemTemplate('fuel', experimentalVersion, [
     {
       name: 'duration',
       message: 'Duration 🧪',
@@ -297,7 +438,7 @@ exports.newFuelItem = new Form(
 );
 
 exports.newThrowableItem = new Form(
-  newItemTemplate('throwable item', 'throwable', experimentalVersion, [
+  newItemTemplate('throwable', experimentalVersion, [
     {
       name: 'do_swing_animation',
       message: 'Do swing animation 🧪',
@@ -360,7 +501,7 @@ exports.newThrowableItem = new Form(
 );
 
 exports.newWeaponItem = new Form(
-  newItemTemplate('weapon item', 'weapon', stableVersion, [
+  newItemTemplate('weapon', stableVersion, [
     {
       name: 'on_hit_block',
       message: 'On hit block 🧪',
@@ -400,4 +541,4 @@ exports.newWeaponItem = new Form(
   ])
 );
 
-exports.newCustomItem = new Form(newItemTemplate('custom item', 'other'));
+exports.newCustomItem = new Form(newItemTemplate('custom item', 'custom'));

@@ -22,12 +22,21 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * @param {String} source
+ * @param {String} target
+ */
 const copyFileIfNotExists = (source, target) => {
   if (fs.existsSync(source) && !fs.existsSync(target)) {
     fs.copyFileSync(source, target);
   }
 };
 
+/**
+ * @param {String} folderPath
+ * @param {String} name
+ * @param {String} content
+ */
 const createFileIfNotExists = (folderPath, name, content = '') => {
   const pathName = name ? path.join(folderPath, name) : folderPath;
   if (!fs.existsSync(pathName)) {
@@ -41,6 +50,10 @@ const createFileIfNotExists = (folderPath, name, content = '') => {
   }
 };
 
+/**
+ * @param {String} folderPath
+ * @param {String} name
+ */
 const createFolderIfNotExists = (folderPath, name) => {
   const pathName = name ? path.join(folderPath, name) : folderPath;
   if (!fs.existsSync(pathName)) {

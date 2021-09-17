@@ -34,7 +34,12 @@ const defaultFormatVersion = '1.16.1';
  */
 const createRecipe = (name, options = {}) => {
   const behaviorPackPath = defaultPath.possibleBehaviorPackInWorkingPath;
-  const recipeName = normalizeName(options.name || 'my_recipe');
+  const recipeName = normalizeName(name || 'my_recipe');
+
+  // Make sure config includes name
+  if (!options.name) {
+    options.name = name;
+  }
 
   // Create recipe config in behaviour pack
   files.createFolderIfNotExists(behaviorPackPath, 'recipes');
@@ -148,6 +153,10 @@ const getRecipeConfig = (options = {}) => {
   return result;
 };
 
+/**
+ * @param {Object} grid
+ * @return {Array}
+ */
 const getOptimizedCraftingGridPattern = (grid = {}) => {
   const isRowAUsed = grid.field_a_1 || grid.field_a_2 || grid.field_a_3;
   const isRowBUsed = grid.field_b_1 || grid.field_b_2 || grid.field_b_3;
@@ -183,7 +192,22 @@ const getOptimizedCraftingGridPattern = (grid = {}) => {
     ];
   }
 
-  // 2. Possibility all not all columns are used
+  // 2. Possibility only one field is used.
+  let numberOfEntries = 0;
+  let lastValidEntry = '';
+  // eslint-disable-next-line compat/compat
+  for (const value of Object.values(grid)) {
+    if (value) {
+      lastValidEntry = value;
+      numberOfEntries++;
+    }
+  }
+  if (numberOfEntries == 1 && lastValidEntry) {
+    console.log('Only 1 entry to process', lastValidEntry);
+    return [lastValidEntry.toUpperCase()];
+  }
+
+  // 3. Possibility not all columns are used.
   if (isColAUsed && !isColBUsed && !isColCUsed) {
     return [`${value_1}`, `${value_4}`, `${value_7}`];
   } else if (!isColAUsed && isColBUsed && !isColCUsed) {
@@ -226,7 +250,6 @@ const normalizeName = (name = '') => {
 };
 
 /**
- *
  * @param {String} name
  * @param {String} namespace
  * @return {String}
@@ -235,6 +258,11 @@ const getId = (name, namespace = defaultNamespace) => {
   return `${namespace}:${normalizeName(name)}`;
 };
 
+/**
+ * @param {String} name
+ * @param {String} namespace
+ * @return {Boolean}
+ */
 const existingRecipe = (name, namespace = defaultNamespace) => {
   const possibleItems = getRecipes();
   const itemId = getId(name, namespace);

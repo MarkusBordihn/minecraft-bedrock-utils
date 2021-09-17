@@ -20,10 +20,11 @@
 
 const args = process.argv.slice(2);
 const path = require('../utils/path.js');
+const translation = require('../utils/translation.js');
 
 const debug = () => {
   console.log('minecraft-bedrock-utils:', args, '\n');
-
+  console.log('Detected Language:', translation.language);
   console.log('Detected paths:', path);
 };
 

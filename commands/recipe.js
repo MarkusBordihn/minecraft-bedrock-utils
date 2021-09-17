@@ -38,6 +38,7 @@ const add = (name, options = {}) => {
 
   // If no name was provided start interactive questions.
   if (!name) {
+    // Step 1: Ask for basic information.
     prompts.newRecipePrompt
       .run()
       .then((base_answers) => {
@@ -53,6 +54,7 @@ const add = (name, options = {}) => {
           );
           return;
         }
+        // Step 2: Ask for items which are part of the recipe.
         prompts.recipeItemListPrompt
           .run()
           .then((item_list_answers) => {
@@ -61,6 +63,7 @@ const add = (name, options = {}) => {
                 console.log(`Field ${key.substr(5).toUpperCase()}: ${value}`);
               }
             }
+            // Step 3: Ask for position inside item grid.
             prompts.recipeGridPrompt
               .run()
               .then((item_grid_answers) => {
@@ -78,10 +81,7 @@ const add = (name, options = {}) => {
     return;
   }
 
-  // Adding default options if missing
-  if (!options.name) {
-    options.name = name;
-  }
+  // Adding default options, if missing
   if (!options.namespace) {
     options.namespace =
       process.env.npm_package_config_project_namespace || 'my_item';

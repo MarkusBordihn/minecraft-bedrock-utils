@@ -19,75 +19,9 @@
  */
 
 const defaultPath = require('../utils/path.js');
-const enquirerHelper = require('../utils/enquirer');
 const packs = require('../utils/packs.js');
+const prompts = require('./projectPrompts.js');
 const preChecks = require('../utils/preChecks.js');
-const { Form } = require('enquirer');
-
-const newProjectPrompt = new Form({
-  name: 'project',
-  message: 'Please provide the following information for the project:',
-  choices: [
-    {
-      name: 'name',
-      message: 'Project Name',
-      initial:
-        process.env.npm_package_config_project_name ||
-        process.env.npm_package_name ||
-        'New cool project',
-    },
-    {
-      name: 'nameDir',
-      message: 'Folder Name',
-      initial:
-        process.env.npm_package_config_project_folder_name ||
-        defaultPath.normalizePathName(
-          process.env.npm_package_config_project_name
-        ) ||
-        defaultPath.normalizePathName(process.env.npm_package_name) ||
-        'New_cool_items',
-    },
-    {
-      name: 'version',
-      message: 'Version',
-      initial: process.env.npm_package_version || '1.0.0',
-    },
-    {
-      name: 'behaviorPackDescription',
-      message: 'Behavior Pack Description',
-      initial:
-        'Behavior Pack for ' +
-        (process.env.npm_package_config_project_name ||
-          process.env.npm_package_name ||
-          'New cool items'),
-    },
-    {
-      name: 'resourcePackDescription',
-      message: 'Resource Pack Description',
-      initial:
-        'Resource Pack for ' +
-        (process.env.npm_package_config_project_name ||
-          process.env.npm_package_name ||
-          'New cool items'),
-    },
-    {
-      name: 'minEngineVersion',
-      message: 'Min Engine Version',
-      initial: '1.17.0',
-    },
-    {
-      name: 'preCreateFiles',
-      message: 'Pre-create folders and files like items, texts, ...',
-      enabled: false,
-      format(input, choice) {
-        return enquirerHelper.formatBoolean(input, choice, this);
-      },
-      result(value, choice) {
-        return choice.enabled;
-      },
-    },
-  ],
-});
 
 /**
  * @param {String} name
@@ -102,7 +36,7 @@ const newProject = (name, options = {}) => {
 
   // If no name was provided start interactive questions.
   if (!name) {
-    newProjectPrompt
+    prompts.newProjectPrompt
       .run()
       .then((value) => {
         newProject(value.name, value);
