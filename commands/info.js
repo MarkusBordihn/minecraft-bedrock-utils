@@ -43,7 +43,9 @@ const showInfo = (search_path = defaultPath.workingPath) => {
       )
     );
     console.info(
-      '\nTip: Use "npx minecraft-bedrock-utils new" to create a new behavior and/or resource pack.\n'
+      `\nTip: Use "${chalk.green(
+        'npx minecraft-bedrock-utils new'
+      )}" to create a new behavior and/or resource pack.\n`
     );
     return;
   }

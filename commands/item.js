@@ -38,7 +38,7 @@ const add = (name, options = {}) => {
   }
 
   // Load options from config file for automated creation and tests.
-  if (name.endsWith('.mbu')) {
+  if (name && name.endsWith('.mbu')) {
     options = configuration.loadConfig(name);
     name = options.name;
   }
@@ -128,6 +128,12 @@ const add = (name, options = {}) => {
   preChecks.warnExperimentalVersion(options.format_version);
 
   items.createItem(name, options);
+
+  console.info(
+    `\nTip: Use "${chalk.green(
+      'npx minecraft-bedrock-utils run'
+    )}" to copy your files and starting Minecraft.\n`
+  );
 };
 
 /**

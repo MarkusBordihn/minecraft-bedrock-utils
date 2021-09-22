@@ -54,18 +54,22 @@ exports.showUsage = () => {
 
 Usage:
 
-${addCommands}
-${listCommands}
-${command} debug\t\t\t${chalk.grey('shows debug information')}
-${command} info <path>\t\t${chalk.grey('shows info about specific project')}
-${command} info\t\t\t${chalk.grey('shows info about current project')}
+${command} init\t\t\t${chalk.grey('prepares workspace')}
+${command} new\t\t\t${chalk.grey('creates a new project (interactive)')}
 ${command} new <name>\t\t${chalk.grey(
     'creates a new project with default options'
   )}
-${command} new\t\t\t${chalk.grey('creates a new project (interactive)')}
 ${command} run\t\t\t${chalk.grey(
     'copy behavior and resource development files and start client'
   )}
+${command} deploy\t\t\t${chalk.grey('copy behavior and resource files')}
+
+${addCommands}
+${listCommands}
+
+${command} debug\t\t\t${chalk.grey('shows debug information')}
+${command} info <path>\t\t${chalk.grey('shows info about specific project')}
+${command} info\t\t\t${chalk.grey('shows info about current project')}
 ${command} uuid <name> <namespace>\t${chalk.grey(
     'returns a v5 UUID string for the given name and namespace'
   )}
@@ -73,7 +77,6 @@ ${command} uuid <name>\t\t${chalk.grey(
     'returns a v5 UUID string for the given name with a default namespace'
   )}
 ${command} uuid\t\t\t${chalk.grey('returns a v4 UUID string')}
-${command} deploy\t\t\t${chalk.grey('copy behavior and resource files')}
 ${command} version\t\t\t${chalk.grey('shows current version number')}
 \n`;
   console.log(usage);

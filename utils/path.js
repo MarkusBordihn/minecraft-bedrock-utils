@@ -197,6 +197,7 @@ const normalizePathName = (name = '') => {
 // General path definitions
 exports.modulePath = path.resolve(__dirname, '..');
 exports.assetsPath = path.join(exports.modulePath, 'assets');
+exports.assetsInitPath = path.join(exports.modulePath, 'assets', 'init');
 exports.assetsItemsPath = path.join(exports.modulePath, 'assets', 'items');
 exports.assetsMiscPath = path.join(exports.modulePath, 'assets', 'misc');
 exports.assetsModelsPath = path.join(exports.modulePath, 'assets', 'models');

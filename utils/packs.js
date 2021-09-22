@@ -49,11 +49,11 @@ const newBehaviorPack = (name, options = {}) => {
   if (options.preCreateFiles) {
     files.createFolderIfNotExists(packPathName, 'items');
     files.createFolderIfNotExists(packPathName, 'recipes');
-    files.copyFileIfNotExists(
-      path.join(defaultPath.assetsPath, 'behavior_pack.png'),
-      path.join(packPathName, 'pack_icon.png')
-    );
   }
+  files.copyFileIfNotExists(
+    path.join(defaultPath.assetsPath, 'behavior_pack.png'),
+    path.join(packPathName, 'pack_icon.png')
+  );
 
   // Autocomplete Options if needed
   if (!options.name) {
@@ -130,11 +130,11 @@ const newResourcePack = (name, options = {}) => {
       path.join(packPathName, 'textures', 'models'),
       'armor'
     );
-    files.copyFileIfNotExists(
-      path.join(defaultPath.assetsPath, 'resource_pack.png'),
-      path.join(packPathName, 'pack_icon.png')
-    );
   }
+  files.copyFileIfNotExists(
+    path.join(defaultPath.assetsPath, 'resource_pack.png'),
+    path.join(packPathName, 'pack_icon.png')
+  );
 
   // Create and return manifest.json
   return manifest.createManifest(manifestPathName, options);

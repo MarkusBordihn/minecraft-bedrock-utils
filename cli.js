@@ -25,6 +25,7 @@ const args = process.argv.slice(2);
 const debug = require('./commands/debug.js');
 const files = require('./commands/files.js');
 const info = require('./commands/info.js');
+const init = require('./commands/init.js');
 const item = require('./commands/item.js');
 const launch = require('./commands/launch.js');
 const project = require('./commands/project.js');
@@ -69,6 +70,9 @@ switch (args[0]) {
     break;
   case 'info':
     info.showInfo(args[1]);
+    break;
+  case 'init':
+    init.newWorkspace();
     break;
   case 'launch':
     launch();

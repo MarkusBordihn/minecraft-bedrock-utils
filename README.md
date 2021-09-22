@@ -53,8 +53,9 @@ The following folder structure is recommended for new projects.
 - **Project Folder**
   - **package.json** (for npm)
 
-Execute the command `npx minecraft-bedrock-utils new` inside the project folder
-to create the recommend structure.
+Execute the command `npx minecraft-bedrock-utils init` and
+`npx minecraft-bedrock-utils new` inside your empty project folder to
+automatically create the recommend structure.
 
 ## How to use the utils
 
@@ -66,9 +67,20 @@ project folder.
 Commands are executed over the **npx** command for example
 `npx minecraft-bedrock-utils <command>` inside the project folder.
 
+### init
+
+The init command prepares the workspace and installs a local copy of the needed
+tools for offline usage.
+
+Use the following command inside a empty folder:
+`npx minecraft-bedrock-utils init`
+
+After this was successful you should use the `npx minecraft-bedrock-utils new`
+command to setup your new project.
+
 ### new
 
-The new commands creates a new project with the required folder and files. It
+The new command creates a new project with the required folder and files. It
 should be only used for new projects and will give you and error if there are
 any existing behavior or resource packs.
 
@@ -126,8 +138,8 @@ Example: `npx minecraft-bedrock-utils launch`
 ### deploy
 
 The deploy commands copies the behavior pack and/or resource pack of the current
-directory into the behavior pack and/or resource pack folders to run it on
-a multiplayer server.
+directory into the behavior pack and/or resource pack folders to run it on a
+multiplayer server.
 
 Example: `npx minecraft-bedrock-utils copy`
 
@@ -162,8 +174,9 @@ Example: `npx minecraft-bedrock-utils debug`
 
 ## Supported config options
 
-To make things easier to maintain it's possible to pre-define some of the values inside the *package.json*.
-These information are mostly used for creating new project and items and have less relevant afterwards.
+To make things easier to maintain it's possible to pre-define some of the values
+inside the _package.json_. These information are mostly used for creating new
+project and items and have less relevant afterwards.
 
 Example manifest.json:
 
