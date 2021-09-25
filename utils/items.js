@@ -18,17 +18,18 @@
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
-const attachable = require('./attachables.js');
 const chalk = require('chalk');
 const compareVersions = require('compare-versions');
+const fs = require('fs');
+const glob = require('glob');
+const path = require('path');
+const { config } = require('process');
+
+const attachable = require('./attachables.js');
 const configuration = require('./configuration.js');
 const defaultPath = require('../utils/path.js');
 const files = require('./files.js');
-const fs = require('fs');
-const glob = require('glob');
 const language = require('./language.js');
-const path = require('path');
-const { config } = require('process');
 
 const defaultNamespace = 'my_items';
 const defaultFormatVersion = '1.16.1';
@@ -100,12 +101,7 @@ const createItem = (name, options = {}) => {
 
   // Store item configuration, if needed
   if (options.save_config) {
-    const configurationPath = path.join('.minecraft-bedrock-utils');
-    files.createFolderIfNotExists(configurationPath);
-    configuration.saveConfig(
-      path.join(configurationPath, `item_${itemId.replace(':', '__')}.mbu`),
-      options
-    );
+    configuration.saveDefaultConfig(`item_${itemId}.mbu`, options);
   }
 };
 

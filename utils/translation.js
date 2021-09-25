@@ -18,13 +18,15 @@
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
-const getLocaleLanguage = () => {
-  return (
-    process.env.LC_ALL ||
-    process.env.LC_MESSAGES ||
-    process.env.LANG ||
-    process.env.LANGUAGE
-  );
-};
+const language =
+  process.env.LC_ALL ||
+  process.env.LC_MESSAGES ||
+  process.env.LANG ||
+  process.env.LANGUAGE ||
+  (Intl
+    ? // eslint-disable-next-line new-cap
+      Intl.DateTimeFormat().resolvedOptions().locale
+    : '') ||
+  '';
 
-exports.language = getLocaleLanguage();
+exports.language = language;

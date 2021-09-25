@@ -26,6 +26,7 @@ const debug = () => {
   console.log('minecraft-bedrock-utils:', args, '\n');
   console.log('Detected Language:', translation.language);
   console.log('Detected paths:', path);
+  console.log('Process Env:', process.env);
 };
 
 module.exports = debug;

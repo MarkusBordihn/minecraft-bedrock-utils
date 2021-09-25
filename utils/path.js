@@ -186,30 +186,29 @@ const getResourcePacksPath = () => {
   }
 };
 
-/**
- * @param {String} name
- * @return {String}
- */
-const normalizePathName = (name = '') => {
-  return name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
-};
-
 // General path definitions
+exports.configPath = path.join(process.cwd(), '.minecraft-bedrock-utils');
 exports.modulePath = path.resolve(__dirname, '..');
-exports.assetsPath = path.join(exports.modulePath, 'assets');
+exports.workingPath = getWorkingPath();
+
 exports.assetsInitPath = path.join(exports.modulePath, 'assets', 'init');
 exports.assetsItemsPath = path.join(exports.modulePath, 'assets', 'items');
 exports.assetsMiscPath = path.join(exports.modulePath, 'assets', 'misc');
+exports.assetsModelsArmorPath = path.join(
+  exports.modulePath,
+  'assets',
+  'armor'
+);
 exports.assetsModelsPath = path.join(exports.modulePath, 'assets', 'models');
-exports.assetsModelsArmorPath = path.join(exports.assetsModelsPath, 'armor');
-exports.workingPath = getWorkingPath();
+exports.assetsPath = path.join(exports.modulePath, 'assets');
+
+exports.minecraftPath = getMinecraftPath();
+exports.minecraftLocalStatePath = getMinecraftLocalStatePath();
 exports.possibleManifestInWorkingPath = getPossibleManifestInWorkingPath();
 exports.possibleBehaviorPackInWorkingPath =
   getPossibleBehaviorPackInWorkingPath();
 exports.possibleResourcePackInWorkingPath =
   getPossibleResourcePackInWorkingPath();
-exports.minecraftPath = getMinecraftPath();
-exports.minecraftLocalStatePath = getMinecraftLocalStatePath();
 exports.developmentBehaviorPacksPath = getDevelopmentBehaviorPacksPath();
 exports.developmentResourcePacksPath = getDevelopmentResourcePacksPath();
 exports.developmentSkinPacksPath = getDevelopmentSkinPacksPath();
@@ -222,4 +221,3 @@ exports.getPossibleBehaviorPackInSearchPath =
 exports.getPossibleResourcePackPackInSearchPath =
   getPossibleResourcePackPackInSearchPath;
 exports.getPossibleManifestInSearchPath = getPossibleManifestInSearchPath;
-exports.normalizePathName = normalizePathName;

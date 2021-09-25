@@ -19,16 +19,40 @@
  */
 
 const chalk = require('chalk');
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 
 /**
  * @param {String} source
  * @param {String} target
  */
-const copyFileIfNotExists = (source, target) => {
+exports.copyFileIfNotExists = (source, target) => {
   if (fs.existsSync(source) && !fs.existsSync(target)) {
     fs.copyFileSync(source, target);
+  }
+};
+
+/**
+ * @param {String} source
+ * @param {String} target
+ */
+exports.copyFolderIfNotExists = (source, target) => {
+  if (fs.existsSync(source) && !fs.existsSync(target)) {
+    fs.copySync(source, target);
+  }
+};
+
+/**
+ * @param {String} source
+ * @param {String} target
+ */
+exports.createBackupFile = (source, target) => {
+  if (fs.existsSync(source)) {
+    if (!target || source == target) {
+      fs.copyFileSync(source, `${source}.bak`);
+    } else {
+      fs.copyFileSync(source, target);
+    }
   }
 };
 
@@ -37,7 +61,7 @@ const copyFileIfNotExists = (source, target) => {
  * @param {String} name
  * @param {String} content
  */
-const createFileIfNotExists = (folderPath, name, content = '') => {
+exports.createFileIfNotExists = (folderPath, name, content = '') => {
   const pathName = name ? path.join(folderPath, name) : folderPath;
   if (!fs.existsSync(pathName)) {
     fs.writeFileSync(pathName, content, (error) => {
@@ -54,10 +78,10 @@ const createFileIfNotExists = (folderPath, name, content = '') => {
  * @param {String} folderPath
  * @param {String} name
  */
-const createFolderIfNotExists = (folderPath, name) => {
+exports.createFolderIfNotExists = (folderPath, name) => {
   const pathName = name ? path.join(folderPath, name) : folderPath;
   if (!fs.existsSync(pathName)) {
-    fs.mkdir(pathName, (error) => {
+    fs.mkdir(pathName, { recursive: true }, (error) => {
       if (error) {
         return console.error(
           chalk.red('Error creating new folder', pathName, ':', error)
@@ -67,6 +91,13 @@ const createFolderIfNotExists = (folderPath, name) => {
   }
 };
 
-exports.copyFileIfNotExists = copyFileIfNotExists;
-exports.createFileIfNotExists = createFileIfNotExists;
-exports.createFolderIfNotExists = createFolderIfNotExists;
+/**
+ * @param {String} name
+ * @return {String}
+ */
+exports.normalizeFileName = (name = '') => {
+  return name
+    .replace(/\s+/g, '_')
+    .replace(':', '__')
+    .replace(/[^a-zA-Z0-9_.-]/g, '');
+};

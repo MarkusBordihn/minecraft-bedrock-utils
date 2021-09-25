@@ -19,10 +19,12 @@
  */
 
 const chalk = require('chalk');
+const path = require('path');
+
+const configuration = require('./configuration.js');
 const defaultPath = require('./path.js');
 const files = require('./files.js');
 const manifest = require('./manifest.js');
-const path = require('path');
 
 /**
  * @param {String} name
@@ -62,6 +64,9 @@ const newBehaviorPack = (name, options = {}) => {
   if (!options.type) {
     options.type = 'behavior';
   }
+
+  // Store configuration
+  configuration.saveDefaultConfig(`behavior_pack.mbu`, options);
 
   // Create and return manifest.json
   return manifest.createManifest(manifestPathName, options);
@@ -135,6 +140,9 @@ const newResourcePack = (name, options = {}) => {
     path.join(defaultPath.assetsPath, 'resource_pack.png'),
     path.join(packPathName, 'pack_icon.png')
   );
+
+  // Store configuration
+  configuration.saveDefaultConfig(`resource_pack.mbu`, options);
 
   // Create and return manifest.json
   return manifest.createManifest(manifestPathName, options);
