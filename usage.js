@@ -22,6 +22,14 @@ const chalk = require('chalk');
 
 const command = chalk.green('minecraft-bedrock-utils');
 
+const mainCommands = `
+${command} init\t\t\t${chalk.grey('prepares workspace')}
+${command} new\t\t\t${chalk.grey('creates a new project (interactive)')}
+${command} new <name>\t\t${chalk.grey(
+  'creates a new project with default options'
+)}
+`.substr(1);
+
 const addCommands = `
 ${command} add item\t\t${chalk.grey('add a new item (interactive)')}
 ${command} add item <name>\t\t${chalk.grey(
@@ -49,36 +57,41 @@ ${command} list recipes <path>\t${chalk.grey(
 )}
 `.substr(1);
 
+const runCommands = `
+${command} run\t\t\t${chalk.grey(
+  'copy behavior and resource development files and start client'
+)}
+${command} deploy\t\t\t${chalk.grey('copy behavior and resource files')}
+`.substr(1);
+
+const miscCommands = `
+${command} info <path>\t\t${chalk.grey('shows info about specific project')}
+${command} info\t\t\t${chalk.grey('shows info about current project')}
+${command} uuid <name> <namespace>\t${chalk.grey(
+  'returns a v5 UUID string for the given name and namespace'
+)}
+${command} uuid <name>\t\t${chalk.grey(
+  'returns a v5 UUID string for the given name with a default namespace'
+)}
+${command} uuid\t\t\t${chalk.grey('returns a v4 UUID string')}
+`.substr(1);
+
+const debugCommands = `
+${command} debug\t\t\t${chalk.grey('shows debug information')}
+${command} version\t\t\t${chalk.grey('shows current version number')}
+`.substr(1);
+
 exports.showUsage = () => {
   const usage = `${command} <command>
 
 Usage:
 
-${command} init\t\t\t${chalk.grey('prepares workspace')}
-${command} new\t\t\t${chalk.grey('creates a new project (interactive)')}
-${command} new <name>\t\t${chalk.grey(
-    'creates a new project with default options'
-  )}
-${command} run\t\t\t${chalk.grey(
-    'copy behavior and resource development files and start client'
-  )}
-${command} deploy\t\t\t${chalk.grey('copy behavior and resource files')}
-
+${mainCommands}
+${runCommands}
 ${addCommands}
 ${listCommands}
-
-${command} debug\t\t\t${chalk.grey('shows debug information')}
-${command} info <path>\t\t${chalk.grey('shows info about specific project')}
-${command} info\t\t\t${chalk.grey('shows info about current project')}
-${command} uuid <name> <namespace>\t${chalk.grey(
-    'returns a v5 UUID string for the given name and namespace'
-  )}
-${command} uuid <name>\t\t${chalk.grey(
-    'returns a v5 UUID string for the given name with a default namespace'
-  )}
-${command} uuid\t\t\t${chalk.grey('returns a v4 UUID string')}
-${command} version\t\t\t${chalk.grey('shows current version number')}
-\n`;
+${miscCommands}
+${debugCommands}`;
   console.log(usage);
 };
 

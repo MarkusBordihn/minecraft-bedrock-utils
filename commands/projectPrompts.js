@@ -18,9 +18,13 @@
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
-const defaultPath = require('../utils/path.js');
-const enquirerHelper = require('../utils/enquirer');
 const { Form } = require('enquirer');
+
+const enquirerHelper = require('../utils/enquirer');
+
+const normalizePathName = (name = '') => {
+  return name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
+};
 
 exports.newProjectPrompt = new Form({
   name: 'project',
@@ -38,11 +42,9 @@ exports.newProjectPrompt = new Form({
       name: 'nameDir',
       message: 'Folder Name',
       initial:
-        process.env.npm_package_config_project_folder_name ||
-        defaultPath.normalizePathName(
-          process.env.npm_package_config_project_name
-        ) ||
-        defaultPath.normalizePathName(process.env.npm_package_name) ||
+        normalizePathName(process.env.npm_package_config_project_folder_name) ||
+        normalizePathName(process.env.npm_package_config_project_name) ||
+        normalizePathName(process.env.npm_package_name) ||
         'New_cool_items',
     },
     {

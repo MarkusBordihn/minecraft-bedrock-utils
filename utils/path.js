@@ -105,13 +105,16 @@ const getPossibleResourcePackInWorkingPath = () => {
 };
 
 const getMinecraftPath = () => {
-  const minecraftPath = path.resolve(
-    process.env.LOCALAPPDATA,
-    'Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe'
-  );
-  if (fs.existsSync(minecraftPath)) {
-    return minecraftPath;
+  if (process.env.LOCALAPPDATA) {
+    const minecraftPath = path.resolve(
+      process.env.LOCALAPPDATA,
+      'Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe'
+    );
+    if (fs.existsSync(minecraftPath)) {
+      return minecraftPath;
+    }
   }
+  return '';
 };
 
 const getMinecraftLocalStatePath = () => {

@@ -1,6 +1,6 @@
 {
   "name": "minecraft-bedrock-utils",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "Collection of useful Minecraft Bedrock development related utilities.",
   "preferGlobal": true,
   "main": "index.js",
@@ -51,7 +51,8 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "npm exec ./",
+    "test": "npm exec ./ && npm exec ./ debug && npm exec ./ version",
+    "test-cli": "npm exec ./ new && npm exec ./ add item && npm exec ./ add recipe && npm exec ./ list items && npm exec ./ list recipes && npm exec ./ info && npm exec ./ uuid && npm exec ./ debug && npm exec ./ version",
     "sync": "git pull && npm install && npm update && npm prune && npm audit fix",
     "upgrade": "npm-upgrade & npm install & npm update & npm prune & npm audit fix & npm run test"
   }
