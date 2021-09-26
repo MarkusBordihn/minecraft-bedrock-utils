@@ -22,6 +22,8 @@ const fs = require('fs');
 const glob = require('glob');
 const path = require('path');
 
+const configuration = require('./configuration.js');
+
 const getWorkingPath = () => {
   return process.cwd();
 };
@@ -187,7 +189,7 @@ const getResourcePacksPath = () => {
 };
 
 // General path definitions
-exports.configPath = path.join(process.cwd(), '.minecraft-bedrock-utils');
+exports.configPath = path.join(process.cwd(), configuration.configPath);
 exports.modulePath = path.resolve(__dirname, '..');
 exports.workingPath = getWorkingPath();
 

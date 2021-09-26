@@ -20,8 +20,8 @@
 
 const defaultPath = require('../utils/path.js');
 const packs = require('../utils/packs.js');
-const prompts = require('./projectPrompts.js');
 const preChecks = require('../utils/preChecks.js');
+const prompts = require('./projectPrompts.js');
 
 /**
  * @param {String} name

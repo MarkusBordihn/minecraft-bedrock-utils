@@ -19,6 +19,7 @@
  */
 
 const chalk = require('chalk');
+
 const configuration = require('../utils/configuration.js');
 const items = require('../utils/items.js');
 const preChecks = require('../utils/preChecks.js');

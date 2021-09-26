@@ -25,6 +25,7 @@ const defaultPath = require('../utils/path.js');
 const files = require('./files.js');
 
 const extension = '.mbu';
+const configPath = '.minecraft-bedrock-utils';
 
 /**
  * @param {String} file
@@ -87,6 +88,7 @@ const saveDefaultConfig = (name, options = {}) => {
   saveConfig(path.join(defaultPath.configPath, name), options);
 };
 
+exports.configPath = configPath;
 exports.loadConfig = loadConfig;
 exports.loadDefaultConfig = loadDefaultConfig;
 exports.saveConfig = saveConfig;

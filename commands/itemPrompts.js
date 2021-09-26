@@ -18,12 +18,13 @@
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
-const defaultPath = require('../utils/path.js');
-const enquirerHelper = require('../utils/enquirer');
 const fs = require('fs');
-const items = require('../utils/items.js');
 const path = require('path');
 const { Form, Select } = require('enquirer');
+
+const defaultPath = require('../utils/path.js');
+const enquirerHelper = require('../utils/enquirer');
+const items = require('../utils/items.js');
 
 const stableVersion = '1.16.1';
 const experimentalVersion = '1.16.100';
