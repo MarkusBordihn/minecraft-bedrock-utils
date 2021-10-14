@@ -1,39 +1,24 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Info command
- *
- * @license Copyright 2021 Markus Bordihn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * @file Minecraft Bedrock Utils - Info command
+ * @license Apache-2.0
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
 const chalk = require('chalk');
 const fs = require('fs');
-const defaultPath = require('../utils/path.js');
+const { defaultPath, fileFinderUtils } = require('minecraft-utils-shared');
+
 const manifest = require('../utils/manifest.js');
 
 /**
  * @param {String} search_path
  */
-const showInfo = (search_path = defaultPath.workingPath) => {
-  let behaviorPackPath = defaultPath.possibleBehaviorPackInWorkingPath;
-  let resourcePackPath = defaultPath.possibleResourcePackInWorkingPath;
-  if (search_path != defaultPath.workingPath) {
-    behaviorPackPath =
-      defaultPath.getPossibleBehaviorPackInSearchPath(search_path);
-    resourcePackPath =
-      defaultPath.getPossibleResourcePackPackInSearchPath(search_path);
+const showInfo = (search_path = defaultPath.project.path) => {
+  let behaviorPackPath = defaultPath.bedrock.behaviorPack;
+  let resourcePackPath = defaultPath.bedrock.resourcePack;
+  if (search_path != defaultPath.project.path) {
+    behaviorPackPath = fileFinderUtils.getBehaviorPackInSearchPath(search_path);
+    resourcePackPath = fileFinderUtils.getResourcePackInSearchPath(search_path);
   }
   if (!fs.existsSync(behaviorPackPath) && !fs.existsSync(resourcePackPath)) {
     console.error(

@@ -1,27 +1,13 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Manifest lib
- *
- * @license Copyright 2021 Markus Bordihn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * @file Minecraft Bedrock Utils - Manifest lib
+ * @license Apache-2.0
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
 const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
+const { uuidUtils } = require('minecraft-utils-shared');
 
 /**
  * @param {String} file
@@ -64,7 +50,7 @@ const getManifest = (options = {}) => {
     header: {
       name: options.name,
       description: options.description || '',
-      uuid: uuidv4(),
+      uuid: uuidUtils.getUUID(),
       version: options.version || [1, 0, 0],
       min_engine_version: options.minEngineVersion || [1, 17, 0],
     },
@@ -81,7 +67,7 @@ const getManifest = (options = {}) => {
   if (options.type == 'behavior') {
     result.modules.push({
       type: 'data',
-      uuid: uuidv4(),
+      uuid: uuidUtils.getUUID(),
       version: options.version || [1, 0, 0],
     });
     if (!result.header.description) {
@@ -90,7 +76,7 @@ const getManifest = (options = {}) => {
   } else if (options.type == 'resource') {
     result.modules.push({
       type: 'resources',
-      uuid: uuidv4(),
+      uuid: uuidUtils.getUUID(),
       version: options.version || [1, 0, 0],
     });
     if (!result.header.description) {

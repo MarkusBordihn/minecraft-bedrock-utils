@@ -1,30 +1,95 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - project command prompts
- *
- * @license Copyright 2021 Markus Bordihn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * @file Minecraft Bedrock Utils - project command prompts
+ * @license Apache-2.0
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
-const { Form } = require('enquirer');
-
-const enquirerHelper = require('../utils/enquirer');
+const { Form, Select } = require('enquirer');
+const { defaultConfig, enquirerHelper } = require('minecraft-utils-shared');
 
 const normalizePathName = (name = '') => {
   return name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
 };
+
+exports.projectTypePrompt = new Select({
+  name: 'projectType',
+  message: 'Please select the type of your project',
+  choices: [
+    {
+      message: 'Add-On (Behavior Pack and Resource Pack)',
+      value: defaultConfig.project.type.ADD_ON,
+    },
+    {
+      message: 'Behavior Pack',
+      value: defaultConfig.project.type.BEHAVIOR_PACK,
+    },
+    {
+      message: 'Resource Pack',
+      value: defaultConfig.project.type.RESOURCE_PACK,
+    },
+    {
+      message: 'Skin Pack',
+      value: defaultConfig.project.type.SKIN_PACK,
+      disabled: true,
+    },
+  ],
+});
+
+exports.newAddOnPrompt = new Form({
+  name: 'project',
+  message: 'Please provide the following information for the Add-On project:',
+  choices: [
+    {
+      name: 'name',
+      message: 'Project Name',
+      initial: defaultConfig.project.config.name,
+    },
+    {
+      name: 'bedrock.folderName',
+      message: 'Folder Name',
+      initial: defaultConfig.project.config.bedrock.folderName,
+    },
+    {
+      name: 'version',
+      message: 'Version',
+      initial: defaultConfig.project.config.version,
+    },
+    {
+      name: 'bedrock.behaviorPack.description',
+      message: 'Behavior Pack Description',
+      initial: defaultConfig.project.config.bedrock.behaviorPack.description,
+      onChoice(state, choice) {
+        const { name } = this.values;
+        choice.initial = `Behavior Pack for ${name}`;
+      },
+    },
+    {
+      name: 'bedrock.resourcePack.description',
+      message: 'Resource Pack Description',
+      initial: defaultConfig.project.config.bedrock.resourcePack.description,
+      onChoice(state, choice) {
+        const { name } = this.values;
+        choice.initial = `Resource Pack for ${name}`;
+      },
+    },
+    {
+      name: 'minEngineVersion',
+      message: 'Min Engine Version',
+      initial: defaultConfig.project.config.minEngineVersion,
+    },
+    {
+      name: 'misc.preCreateFiles',
+      message: 'Pre-create folders and files like items, texts, ...',
+      enabled: false,
+      format(input, choice) {
+        return enquirerHelper.formatBoolean(input, choice, this);
+      },
+      result(value, choice) {
+        return choice.enabled;
+      },
+    },
+  ],
+});
 
 exports.newProjectPrompt = new Form({
   name: 'project',

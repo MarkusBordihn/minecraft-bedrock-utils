@@ -1,29 +1,18 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Pack lib
- *
- * @license Copyright 2021 Markus Bordihn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * @file Minecraft Bedrock Utils - Pack lib
+ * @license Apache-2.0
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
 const chalk = require('chalk');
 const path = require('path');
+const {
+  configurationUtils,
+  defaultPath,
+  fileUtils,
+  normalizeHelper,
+} = require('minecraft-utils-shared');
 
-const configuration = require('./configuration.js');
-const defaultPath = require('./path.js');
-const files = require('./files.js');
 const manifest = require('./manifest.js');
 
 /**
@@ -33,8 +22,9 @@ const manifest = require('./manifest.js');
  */
 const newBehaviorPack = (name, options = {}) => {
   const packPathName =
-    defaultPath.normalizePathName(options.nameDir ? options.nameDir : name) +
-    '_BehaviorPack';
+    normalizeHelper.normalizePathName(
+      options.folderName ? options.folderName : name
+    ) + '_BehaviorPack';
   const manifestPathName = path.join(packPathName, 'manifest.json');
   console.log(
     'Creating new BehaviorPack',
@@ -45,15 +35,17 @@ const newBehaviorPack = (name, options = {}) => {
   );
 
   // Create project folder
-  files.createFolderIfNotExists(packPathName);
+  fileUtils.createFolderIfNotExists(packPathName);
 
   // Create additional files
   if (options.preCreateFiles) {
-    files.createFolderIfNotExists(packPathName, 'items');
-    files.createFolderIfNotExists(packPathName, 'recipes');
+    fileUtils.createFolderIfNotExists(packPathName, 'items');
+    fileUtils.createFolderIfNotExists(packPathName, 'recipes');
   }
-  files.copyFileIfNotExists(
-    path.join(defaultPath.assetsPath, 'behavior_pack.png'),
+
+  // Add  default package icon
+  fileUtils.copyFileIfNotExists(
+    path.join(defaultPath.assets.logos, 'behavior_pack.png'),
     path.join(packPathName, 'pack_icon.png')
   );
 
@@ -66,7 +58,7 @@ const newBehaviorPack = (name, options = {}) => {
   }
 
   // Store configuration
-  configuration.saveDefaultConfig(`behavior_pack.mbu`, options);
+  configurationUtils.saveDefaultConfig(`behavior_pack.mbu`, options);
 
   // Create and return manifest.json
   return manifest.createManifest(manifestPathName, options);
@@ -79,8 +71,9 @@ const newBehaviorPack = (name, options = {}) => {
  */
 const newResourcePack = (name, options = {}) => {
   const packPathName =
-    defaultPath.normalizePathName(options.nameDir ? options.nameDir : name) +
-    '_ResourcePack';
+    normalizeHelper.normalizePathName(
+      options.folderName ? options.folderName : name
+    ) + '_ResourcePack';
   const manifestPathName = path.join(packPathName, 'manifest.json');
   console.log(
     'Creating new ResourcePack',
@@ -91,7 +84,7 @@ const newResourcePack = (name, options = {}) => {
   );
 
   // Create project folder
-  files.createFolderIfNotExists(packPathName);
+  fileUtils.createFolderIfNotExists(packPathName);
 
   // Autocomplete Options if needed
   if (!options.name) {
@@ -103,21 +96,24 @@ const newResourcePack = (name, options = {}) => {
 
   // Create additional files
   if (options.preCreateFiles) {
-    files.createFolderIfNotExists(packPathName, 'items');
-    files.createFolderIfNotExists(packPathName, 'texts');
-    files.createFileIfNotExists(path.join(packPathName, 'texts'), 'en_US.lang');
-    files.createFileIfNotExists(
+    fileUtils.createFolderIfNotExists(packPathName, 'items');
+    fileUtils.createFolderIfNotExists(packPathName, 'texts');
+    fileUtils.createFileIfNotExists(
+      path.join(packPathName, 'texts'),
+      'en_US.lang'
+    );
+    fileUtils.createFileIfNotExists(
       path.join(packPathName, 'texts'),
       'languages.json',
       '[\n  "en_US"\n]\n'
     );
-    files.createFileIfNotExists(
+    fileUtils.createFileIfNotExists(
       path.join(packPathName, 'texts'),
       'language_names.json',
       '[\n  [ "en_US", "English (US)" ]\n]\n'
     );
-    files.createFolderIfNotExists(packPathName, 'textures');
-    files.createFileIfNotExists(
+    fileUtils.createFolderIfNotExists(packPathName, 'textures');
+    fileUtils.createFileIfNotExists(
       path.join(packPathName, 'textures'),
       'item_texture.json',
       `{
@@ -126,23 +122,28 @@ const newResourcePack = (name, options = {}) => {
   "texture_data": {}
 }`
     );
-    files.createFolderIfNotExists(path.join(packPathName, 'textures'), 'items');
-    files.createFolderIfNotExists(
+    fileUtils.createFolderIfNotExists(
+      path.join(packPathName, 'textures'),
+      'items'
+    );
+    fileUtils.createFolderIfNotExists(
       path.join(packPathName, 'textures'),
       'models'
     );
-    files.createFolderIfNotExists(
+    fileUtils.createFolderIfNotExists(
       path.join(packPathName, 'textures', 'models'),
       'armor'
     );
   }
-  files.copyFileIfNotExists(
-    path.join(defaultPath.assetsPath, 'resource_pack.png'),
+
+  // Add  default package icon
+  fileUtils.copyFileIfNotExists(
+    path.join(defaultPath.assets.logos, 'resource_pack.png'),
     path.join(packPathName, 'pack_icon.png')
   );
 
   // Store configuration
-  configuration.saveDefaultConfig(`resource_pack.mbu`, options);
+  configurationUtils.saveDefaultConfig(`resource_pack.mbu`, options);
 
   // Create and return manifest.json
   return manifest.createManifest(manifestPathName, options);

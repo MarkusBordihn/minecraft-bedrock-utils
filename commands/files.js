@@ -1,36 +1,22 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Files command
- *
- * @license Copyright 2021 Markus Bordihn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * @file Minecraft Bedrock Utils - Files command
+ * @license Apache-2.0
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
 const chalk = require('chalk');
 const fs = require('fs-extra');
 const path = require('path');
-const defaultPath = require('../utils/path.js');
+const { defaultPath } = require('minecraft-utils-shared');
 
 const copyBehaviorFiles = () => {
   if (
-    defaultPath.possibleBehaviorPackInWorkingPath &&
-    defaultPath.behaviorPacksPath
+    defaultPath.bedrock.behaviorPack &&
+    defaultPath.bedrock.client.behaviorPacks
   ) {
-    const srcDir = defaultPath.possibleBehaviorPackInWorkingPath;
+    const srcDir = defaultPath.bedrock.behaviorPack;
     const targetDir = path.join(
-      defaultPath.behaviorPacksPath,
+      defaultPath.bedrock.client.behaviorPacks,
       path.basename(srcDir)
     );
     if (fs.existsSync(targetDir)) {
@@ -54,12 +40,12 @@ const copyBehaviorFiles = () => {
 
 const copyResourceFiles = () => {
   if (
-    defaultPath.possibleResourcePackInWorkingPath &&
-    defaultPath.resourcePacksPath
+    defaultPath.bedrock.resourcePack &&
+    defaultPath.bedrock.client.resourcePacks
   ) {
-    const srcDir = defaultPath.possibleResourcePackInWorkingPath;
+    const srcDir = defaultPath.bedrock.resourcePack;
     const targetDir = path.join(
-      defaultPath.resourcePacksPath,
+      defaultPath.bedrock.client.resourcePacks,
       path.basename(srcDir)
     );
     if (fs.existsSync(targetDir)) {
@@ -89,12 +75,12 @@ const copyFiles = () => {
 
 const copyBehaviorDevelopmentFiles = () => {
   if (
-    defaultPath.possibleBehaviorPackInWorkingPath &&
-    defaultPath.developmentBehaviorPacksPath
+    defaultPath.bedrock.behaviorPack &&
+    defaultPath.bedrock.client.developmentBehaviorPacks
   ) {
-    const srcDir = defaultPath.possibleBehaviorPackInWorkingPath;
+    const srcDir = defaultPath.bedrock.behaviorPack;
     const targetDir = path.join(
-      defaultPath.developmentBehaviorPacksPath,
+      defaultPath.bedrock.client.developmentBehaviorPacks,
       path.basename(srcDir)
     );
     if (fs.existsSync(targetDir)) {
@@ -118,12 +104,12 @@ const copyBehaviorDevelopmentFiles = () => {
 
 const copyResourceDevelopmentFiles = () => {
   if (
-    defaultPath.possibleResourcePackInWorkingPath &&
-    defaultPath.developmentResourcePacksPath
+    defaultPath.bedrock.resourcePack &&
+    defaultPath.bedrock.client.developmentResourcePacks
   ) {
-    const srcDir = defaultPath.possibleResourcePackInWorkingPath;
+    const srcDir = defaultPath.bedrock.resourcePack;
     const targetDir = path.join(
-      defaultPath.developmentResourcePacksPath,
+      defaultPath.bedrock.client.developmentResourcePacks,
       path.basename(srcDir)
     );
     if (fs.existsSync(targetDir)) {

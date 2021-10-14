@@ -1,26 +1,15 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Attachables lib
- *
- * @license Copyright 2021 Markus Bordihn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * @file Minecraft Bedrock Utils - Attachables lib
+ * @license Apache-2.0
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
 const chalk = require('chalk');
-const defaultPath = require('../utils/path.js');
-const files = require('./files.js');
+const {
+  defaultPath,
+  fileUtils,
+  normalizeHelper,
+} = require('minecraft-utils-shared');
 const fs = require('fs');
 const path = require('path');
 
@@ -32,8 +21,8 @@ const defaultFormatVersion = '1.16.1';
  * @param {Object} options
  */
 const createAttachable = (name, options = {}) => {
-  const resourcePackPath = defaultPath.possibleResourcePackInWorkingPath;
-  const attachableName = normalizeName(name || 'my_attachable');
+  const resourcePackPath = defaultPath.bedrock.resourcePack;
+  const attachableName = normalizeHelper.normalizeName(name || 'my_attachable');
 
   // Make sure config includes name
   if (!options.name) {
@@ -41,7 +30,7 @@ const createAttachable = (name, options = {}) => {
   }
 
   // Create attachables config in behavior pack
-  files.createFolderIfNotExists(resourcePackPath, 'attachables');
+  fileUtils.createFolderIfNotExists(resourcePackPath, 'attachables');
   const attachableConfig = createAttachableConfig(
     path.join(resourcePackPath, 'attachables', `${attachableName}.json`),
     options
@@ -49,13 +38,13 @@ const createAttachable = (name, options = {}) => {
 
   // Create texture entry
   const texturePath = path.join(resourcePackPath, 'textures');
-  files.createFolderIfNotExists(texturePath);
+  fileUtils.createFolderIfNotExists(texturePath);
 
   // Create default texture entry for armor models
   const modelsTexturePath = path.join(texturePath, 'models');
-  files.createFolderIfNotExists(modelsTexturePath);
+  fileUtils.createFolderIfNotExists(modelsTexturePath);
   const armorModelsTexturePath = path.join(modelsTexturePath, 'armor');
-  files.createFolderIfNotExists(armorModelsTexturePath);
+  fileUtils.createFolderIfNotExists(armorModelsTexturePath);
   if (
     attachableConfig['minecraft:attachable'].description.textures &&
     attachableConfig[
@@ -66,9 +55,10 @@ const createAttachable = (name, options = {}) => {
       attachableConfig['minecraft:attachable'].description.textures.default
     );
     if (defaultTextureName) {
-      files.copyFileIfNotExists(
+      fileUtils.copyFileIfNotExists(
         path.join(
-          defaultPath.assetsModelsArmorPath,
+          defaultPath.assets.models,
+          'armor',
           defaultTextureName.endsWith('_2') ? 'armor_2.png' : 'armor_1.png'
         ),
         path.join(armorModelsTexturePath, `${defaultTextureName}.png`)
@@ -78,7 +68,7 @@ const createAttachable = (name, options = {}) => {
 
   // Create enchanted texture entry for armor.
   const miscTexturePath = path.join(texturePath, 'misc');
-  files.createFolderIfNotExists(miscTexturePath);
+  fileUtils.createFolderIfNotExists(miscTexturePath);
   if (
     attachableConfig['minecraft:attachable'].description.textures &&
     attachableConfig[
@@ -89,8 +79,8 @@ const createAttachable = (name, options = {}) => {
       attachableConfig['minecraft:attachable'].description.textures.enchanted
     );
     if (defaultTextureName) {
-      files.copyFileIfNotExists(
-        path.join(defaultPath.assetsMiscPath, 'enchanted_armor.png'),
+      fileUtils.copyFileIfNotExists(
+        path.join(defaultPath.assets.models, 'armor', 'enchanted_armor.png'),
         path.join(miscTexturePath, `${defaultTextureName}.png`)
       );
     }
@@ -202,20 +192,8 @@ const getAttachableConfig = (options = {}) => {
  * @return {String}
  */
 const getId = (name, namespace = defaultNamespace) => {
-  return `${namespace}:${normalizeName(name)}`;
-};
-
-/**
- * @param {String} name
- * @return {String}
- */
-const normalizeName = (name = '') => {
-  return name
-    .replace(/\s+/g, '_')
-    .replace(/[^a-zA-Z0-9_-]/g, '')
-    .toLowerCase();
+  return `${namespace}:${normalizeHelper.normalizeName(name)}`;
 };
 
 exports.createAttachable = createAttachable;
 exports.getId = getId;
-exports.normalizeName = normalizeName;

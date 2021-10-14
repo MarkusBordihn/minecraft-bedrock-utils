@@ -1,26 +1,12 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Item commands
- *
- * @license Copyright 2021 Markus Bordihn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * @file Minecraft Bedrock Utils - Item commands
+ * @license Apache-2.0
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
 const chalk = require('chalk');
+const { configurationUtils } = require('minecraft-utils-shared');
 
-const configuration = require('../utils/configuration.js');
 const items = require('../utils/items.js');
 const preChecks = require('../utils/preChecks.js');
 const prompts = require('./itemPrompts.js');
@@ -40,7 +26,7 @@ const add = (name, options = {}) => {
 
   // Load options from config file for automated creation and tests.
   if (name && name.endsWith('.mbu')) {
-    options = configuration.loadConfig(name);
+    options = configurationUtils.loadConfig(name);
     name = options.name;
   }
 
@@ -108,15 +94,6 @@ const add = (name, options = {}) => {
     return;
   }
 
-  // Adding default options, if missing
-  if (!options.namespace) {
-    options.namespace =
-      process.env.npm_package_config_project_namespace || 'my_item';
-  }
-  if (!options.format_version) {
-    options.format_version = '1.16.1';
-  }
-
   // Only create new item if we don't found any existing item.
   if (items.existingItem(name, options.namespace)) {
     console.error(
@@ -126,7 +103,7 @@ const add = (name, options = {}) => {
   }
 
   // Warn user if this required an experimental flag
-  preChecks.warnExperimentalVersion(options.format_version);
+  preChecks.warnExperimentalVersion(options['bedrock.formatVersion']);
 
   items.createItem(name, options);
 

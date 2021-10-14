@@ -1,28 +1,13 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Recipe command prompts
- *
- * @license Copyright 2021 Markus Bordihn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * @file Minecraft Bedrock Utils - Recipe command prompts
+ * @license Apache-2.0
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
-const defaultPath = require('../utils/path.js');
 const fs = require('fs');
 const path = require('path');
-const recipes = require('../utils/recipes.js');
 const { Form, Snippet } = require('enquirer');
+const { defaultPath, normalizeHelper } = require('minecraft-utils-shared');
 
 const defaultFormatVersion = '1.16.1';
 
@@ -39,9 +24,9 @@ exports.newRecipePrompt = new Form({
           value &&
           fs.existsSync(
             path.join(
-              defaultPath.possibleBehaviorPackInWorkingPath,
+              defaultPath.bedrock.behaviorPack,
               'recipes',
-              `${recipes.normalizeName(value)}.json`
+              `${normalizeHelper.normalizeName(value)}.json`
             )
           )
         ) {

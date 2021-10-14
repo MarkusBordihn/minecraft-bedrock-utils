@@ -1,29 +1,19 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - Recipes lib
- *
- * @license Copyright 2021 Markus Bordihn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * @file Minecraft Bedrock Utils - Recipes lib
+ * @license Apache-2.0
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
 const chalk = require('chalk');
-const defaultPath = require('../utils/path.js');
-const files = require('./files.js');
 const fs = require('fs');
 const glob = require('glob');
 const path = require('path');
+const {
+  defaultPath,
+  fileFinderUtils,
+  fileUtils,
+  normalizeHelper,
+} = require('minecraft-utils-shared');
 
 const defaultNamespace = 'my_recipes';
 const defaultFormatVersion = '1.16.1';
@@ -33,8 +23,8 @@ const defaultFormatVersion = '1.16.1';
  * @param {Object} options
  */
 const createRecipe = (name, options = {}) => {
-  const behaviorPackPath = defaultPath.possibleBehaviorPackInWorkingPath;
-  const recipeName = normalizeName(name || 'my_recipe');
+  const behaviorPackPath = defaultPath.bedrock.behaviorPack;
+  const recipeName = normalizeHelper.normalizeName(name || 'my_recipe');
 
   // Make sure config includes name
   if (!options.name) {
@@ -42,7 +32,7 @@ const createRecipe = (name, options = {}) => {
   }
 
   // Create recipe config in behaviour pack
-  files.createFolderIfNotExists(behaviorPackPath, 'recipes');
+  fileUtils.createFolderIfNotExists(behaviorPackPath, 'recipes');
   createRecipeConfig(
     path.join(behaviorPackPath, 'recipes', `${recipeName}.json`),
     options
@@ -53,30 +43,32 @@ const createRecipe = (name, options = {}) => {
  * @param {string} search_path
  * @return {Object}
  */
-const getRecipes = (search_path = defaultPath.workingPath) => {
+const getRecipes = (search_path = defaultPath.project.path) => {
   const behaviorPackPath =
-    search_path != defaultPath.workingPath
-      ? defaultPath.getPossibleBehaviorPackInSearchPath(search_path)
-      : defaultPath.possibleBehaviorPackInWorkingPath;
+    search_path != defaultPath.project.path
+      ? fileFinderUtils.getBehaviorPackInSearchPath(search_path)
+      : defaultPath.bedrock.behaviorPack;
   const recipes = {};
 
   // Search for recipes inside behavior pack.
-  glob
-    .sync(path.join(behaviorPackPath, 'recipes/*.json'), {
-      nodir: true,
-    })
-    .map((file) => {
-      const itemFile = fs.readFileSync(file);
-      const itemData = JSON.parse(itemFile);
-      if (itemData['minecraft:recipe_shaped']) {
-        const identifier =
-          itemData['minecraft:recipe_shaped'].description.identifier;
-        recipes[identifier] = {
-          tags: itemData['minecraft:recipe_shaped'].tags || [],
-          result: itemData['minecraft:recipe_shaped'].result || [],
-        };
-      }
-    });
+  if (behaviorPackPath) {
+    glob
+      .sync(path.join(behaviorPackPath, 'recipes/*.json'), {
+        nodir: true,
+      })
+      .map((file) => {
+        const itemFile = fs.readFileSync(file);
+        const itemData = JSON.parse(itemFile);
+        if (itemData['minecraft:recipe_shaped']) {
+          const identifier =
+            itemData['minecraft:recipe_shaped'].description.identifier;
+          recipes[identifier] = {
+            tags: itemData['minecraft:recipe_shaped'].tags || [],
+            result: itemData['minecraft:recipe_shaped'].result || [],
+          };
+        }
+      });
+  }
 
   return recipes;
 };
@@ -242,20 +234,13 @@ const getOptimizedCraftingGridPattern = (grid = {}) => {
   ];
 };
 
-const normalizeName = (name = '') => {
-  return name
-    .replace(/\s+/g, '_')
-    .replace(/[^a-zA-Z0-9_-]/g, '')
-    .toLowerCase();
-};
-
 /**
  * @param {String} name
  * @param {String} namespace
  * @return {String}
  */
 const getId = (name, namespace = defaultNamespace) => {
-  return `${namespace}:${normalizeName(name)}`;
+  return `${namespace}:${normalizeHelper.normalizeName(name)}`;
 };
 
 /**
@@ -276,4 +261,3 @@ exports.createRecipe = createRecipe;
 exports.existingRecipe = existingRecipe;
 exports.getId = getId;
 exports.getRecipes = getRecipes;
-exports.normalizeName = normalizeName;

@@ -1,25 +1,12 @@
 /**
- * @fileoverview Minecraft Bedrock Utils - project command
- *
- * @license Copyright 2021 Markus Bordihn
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * @file Minecraft Bedrock Utils - project command
+ * @license Apache-2.0
  * @author Markus@Bordihn.de (Markus Bordihn)
  */
 
-const defaultPath = require('../utils/path.js');
-const packs = require('../utils/packs.js');
+const { defaultConfig } = require('minecraft-utils-shared');
+
+const project = require('../utils/project.js');
 const preChecks = require('../utils/preChecks.js');
 const prompts = require('./projectPrompts.js');
 
@@ -36,53 +23,36 @@ const newProject = (name, options = {}) => {
 
   // If no name was provided start interactive questions.
   if (!name) {
-    prompts.newProjectPrompt
+    prompts.projectTypePrompt
       .run()
-      .then((value) => {
-        newProject(value.name, value);
+      .then((projectType) => {
+        console.log(projectType);
+        switch (projectType) {
+          case defaultConfig.project.type.ADD_ON:
+            prompts.newAddOnPrompt
+              .run()
+              .then((value) => {
+                newProject(value.name, { type: projectType, ...value });
+              })
+              .catch(console.error);
+            break;
+          default:
+            console.log(
+              'Project type',
+              projectType,
+              'is currently unsupported!'
+            );
+        }
       })
       .catch(console.error);
     return;
   }
 
   // Set Project details
-  const version = options.version
-    ? options.version.split('.').map((part) => {
-        return Number(part);
-      })
-    : [1, 0, 0];
-  const minEngineVersion = options.min_engine_version
-    ? options.min_engine_version.split('.').map((part) => {
-        return Number(part);
-      })
-    : [1, 17, 0];
-  const nameDir = defaultPath.normalizePathName(
-    options.nameDir ? options.nameDir : name
-  );
+  console.log(options);
 
-  // 1.) Create resource pack
-  const resourcePackManifest = packs.newResourcePack(name, {
-    description: options.resourcePackDescription,
-    minEngineVersion: minEngineVersion,
-    nameDir: nameDir,
-    preCreateFiles: options.preCreateFiles,
-    version: version,
-  });
-
-  // 2.) Create behavior pack with reference to resource pack
-  packs.newBehaviorPack(name, {
-    description: options.behaviorPackDescription,
-    dependencies: [
-      {
-        uuid: resourcePackManifest.header.uuid,
-        version: resourcePackManifest.header.version,
-      },
-    ],
-    minEngineVersion: minEngineVersion,
-    nameDir: nameDir,
-    preCreateFiles: options.preCreateFiles,
-    version: version,
-  });
+  // Create new Project template based on the given information.
+  project.newProjectTemplate(name, options);
 };
 
 exports.newProject = newProject;
