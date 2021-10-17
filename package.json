@@ -1,6 +1,6 @@
 {
   "name": "minecraft-bedrock-utils",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "Collection of useful Minecraft Bedrock development related utilities.",
   "preferGlobal": true,
   "main": "index.js",

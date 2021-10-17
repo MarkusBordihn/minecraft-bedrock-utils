@@ -35,8 +35,6 @@ const createItem = (name, itemOptions = {}) => {
   // Normalized options
   const options = defaultConfig.item.normalize(itemOptions, name);
 
-  console.log(options);
-
   // Create item config in behavior pack
   fileUtils.createFolderIfNotExists(behaviorPackPath, 'items');
   createItemConfig(
@@ -55,8 +53,8 @@ const createItem = (name, itemOptions = {}) => {
 
   // Create texture entry
   let textureExampleAssets = options.type || 'custom';
-  if (options.armor_type) {
-    textureExampleAssets = `${textureExampleAssets}_${options.armor_type}`;
+  if (options.type == 'armor') {
+    textureExampleAssets = `${textureExampleAssets}_${options.variation}`;
   }
   const texturePath = path.join(resourcePackPath, 'textures');
   fileUtils.createFolderIfNotExists(texturePath);
@@ -146,7 +144,14 @@ const createResourceConfig = (file, options = {}) => {
       );
     }
   }
-  const item = generators.item.getResourceConfig(options);
+  const item = generators.resource.getResourceConfig(options);
+  if (!item) {
+    console.error(
+      chalk.red('Unable to generate resource config under', file, 'with'),
+      options
+    );
+    return;
+  }
   fs.writeFileSync(file, JSON.stringify(item, null, 2));
   return item;
 };

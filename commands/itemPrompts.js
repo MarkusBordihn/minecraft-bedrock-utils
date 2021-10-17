@@ -183,20 +183,20 @@ exports.newArmorType = new Select({
       message: `${getItemTypeIconForSelection('custom')}   Custom armor`,
     },
     {
-      name: 'boots',
-      message: `${getItemTypeIconForSelection('boots')} Boots`,
+      name: 'helmet',
+      message: `${getItemTypeIconForSelection('helmet')}  Helmet`,
     },
     {
       name: 'chestplate',
       message: `${getItemTypeIconForSelection('chestplate')}  Chestplate`,
     },
     {
-      name: 'helmet',
-      message: `${getItemTypeIconForSelection('helmet')}  Helmet`,
-    },
-    {
       name: 'leggings',
       message: `${getItemTypeIconForSelection('leggings')}  Leggings`,
+    },
+    {
+      name: 'boots',
+      message: `${getItemTypeIconForSelection('boots')} Boots`,
     },
   ],
 });
@@ -225,6 +225,8 @@ exports.newArmorItem = (armor_type) => {
       initial: '1',
     },
   ];
+
+  // Default Texture per Armor Type
   switch (armor_type) {
     case 'boots':
     case 'chestplate':
@@ -265,6 +267,27 @@ exports.newArmorItem = (armor_type) => {
     message: 'Texture (enchanted)',
     initial: 'textures/misc/enchanted_armor',
   });
+
+  // Attachable Config per armor Type
+  switch (armor_type) {
+    case 'boots':
+    case 'chestplate':
+    case 'helmet':
+    case 'leggings':
+      armorItemSelection.push({
+        name: 'attachable.geometry',
+        message: 'Attachable Geometry',
+        initial: 'geometry.humanoid.armor.' + armor_type,
+      });
+      break;
+    default:
+      armorItemSelection.push({
+        name: 'attachable.geometry',
+        message: 'Attachable Geometry',
+        initial: '',
+      });
+  }
+
   return new Form(
     newItemTemplate(
       `armor`,
