@@ -1,0 +1,12 @@
+{
+  "ignore": {
+    "chalk": {
+      "versions": "5.0.1",
+      "reason": "Incompatible"
+    },
+    "execa": {
+      "versions": "6.1.0",
+      "reason": "Incompatible"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-# Minecraft Bedrock Utils
+# Minecraft Bedrock Utils (Maintenance only!)
 
 [![NPM version](https://img.shields.io/npm/v/minecraft-bedrock-utils.svg)](https://www.npmjs.org/package/minecraft-bedrock-utils)
 

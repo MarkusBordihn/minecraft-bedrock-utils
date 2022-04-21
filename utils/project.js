@@ -12,7 +12,10 @@ const {
 
 const packs = require('./packs.js');
 
-const newProjectTemplate = (name, projectOptions = defaultConfig.project) => {
+const newProjectTemplate = (
+  name,
+  projectOptions = defaultConfig.project.config
+) => {
   console.log('Creating new project template for', name);
 
   // Normalized options

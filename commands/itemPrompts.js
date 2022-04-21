@@ -8,6 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const { Form, Select } = require('enquirer');
 const {
+  configurationUtils,
   defaultConfig,
   defaultPath,
   enquirerHelper,
@@ -16,6 +17,7 @@ const {
 
 const stableVersion = '1.16.1';
 const experimentalVersion = '1.16.100';
+const projectConfig = configurationUtils.loadProjectConfig();
 
 /**
  * @param {String} type
@@ -68,7 +70,7 @@ const newItemTemplate = (
       {
         name: 'namespace',
         message: 'Namespace',
-        initial: defaultConfig.item.config.namespace,
+        initial: projectConfig.id || defaultConfig.item.config.namespace,
       },
       {
         name: 'bedrock.formatVersion',

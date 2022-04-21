@@ -5,7 +5,11 @@
  */
 
 const { Form, Select } = require('enquirer');
-const { defaultConfig, enquirerHelper } = require('minecraft-utils-shared');
+const {
+  defaultConfig,
+  enquirerHelper,
+  normalizeHelper,
+} = require('minecraft-utils-shared');
 
 const normalizePathName = (name = '') => {
   return name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
@@ -43,6 +47,21 @@ exports.newAddOnPrompt = new Form({
       name: 'name',
       message: 'Project Name',
       initial: defaultConfig.project.config.name,
+    },
+    {
+      name: 'id',
+      message: 'Project Id',
+      initial: defaultConfig.project.config.id,
+      onChoice(state, choice) {
+        const { name } = this.values;
+        choice.initial = `${normalizeHelper.normalizeModId(name)}`;
+      },
+      validate(value) {
+        return value == normalizeHelper.normalizeModId(value);
+      },
+      result(value) {
+        return normalizeHelper.normalizeModId(value);
+      },
     },
     {
       name: 'bedrock.folderName',
